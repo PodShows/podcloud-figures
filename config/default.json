@@ -1,0 +1,9 @@
+{
+  "listen": 8880,
+  "mongodb": "mongodb://localhost/podcloud_development",
+  "hosts": {
+    "podcasts": "lepodcast.test",
+    "platform": "podcloud.test",
+    "feeds": "feeds.podcloud.test"
+  }
+}
