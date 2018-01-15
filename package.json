@@ -24,6 +24,7 @@
     "compression": "^1.7.1",
     "config": "^1.28.1",
     "express": "4.13.4",
+    "maxmind": "^2.4.0",
     "webpack": "^3.6.0"
   },
   "devDependencies": {
@@ -42,10 +43,12 @@
     "webpack": "^3.6.0"
   },
   "jest": {
-    "transform": { ".*": "<rootDir>/node_modules/babel-jest" },
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    },
     "transformIgnorePatterns": [
       "<rootDir>/(node_modules)/"
-    ],  
+    ],
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
   },
