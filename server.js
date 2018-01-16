@@ -1,2 +1,4 @@
 require("babel-register")
-require("./src/app.js")
+const App = require("./src/app.js")
+  
+App.run()
