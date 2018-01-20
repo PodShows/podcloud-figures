@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "description": "Saving stats and redirecting to files",
   "scripts": {
-    "start": "nodemon ./server.js --exec babel-node",
+    "nodemon": "nodemon ./server.js --exec babel-node",
     "test": "jest",
     "test-watch": "jest --watch",
     "coverage": "jest --coverage",
@@ -18,15 +18,20 @@
     "babel-core": "^6.5.2",
     "babel-loader": "6.2.3",
     "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "6.5.0",
     "babel-preset-env": "1.6.0",
     "compression": "^1.7.1",
     "config": "^1.28.1",
+    "es6-error": "^4.1.1",
     "express": "4.13.4",
+    "jsonwebtoken": "^8.1.0",
     "maxmind": "^2.4.0",
-    "mongoose": "^4.13.9",
-    "webpack": "^3.6.0"
+    "mongoose": "^5.0.1",
+    "webpack": "^3.6.0",
+    "yargs": "^10.1.1",
+    "yargs-promise-handler": "^1.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",

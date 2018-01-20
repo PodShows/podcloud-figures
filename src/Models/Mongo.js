@@ -1,22 +1,19 @@
 import Mongoose from "mongoose"
+import connectionStates from "mongoose/lib/connectionstate"
+
 Mongoose.Promise = global.Promise
 
 const Mongo = {
   connect(conn_str) {
-    const mongo = Mongoose.connect(
-      conn_str,
-      {
-        useMongoClient: true
-      },
-      err => {
-        if (err) {
-          console.error("Could not connect to MongoDB on port 27017")
-        }
-      }
-    )
-
-    return mongo
+    return new Promise((resolve, reject) => {
+      Mongoose.connect(conn_str).then(() => {
+        resolve(Mongoose.connection)
+      }, reject)
+    })
+  },
+  getConnection() {
+    return Mongoose.connection
   }
-}.freeze()
+}
 
 export default Mongo

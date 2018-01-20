@@ -1,9 +1,4 @@
 {
   "listen": "/tmp/podcloud.figures.production.sock",
-  "mongodb": "mongodb://localhost/podcloud",
-  "hosts": {
-    "podcasts": "lepodcast.fr",
-    "platform": "podcloud.fr",
-    "feeds": "feeds.podcloud.fr"
-  }
+  "mongodb": "mongodb://localhost/podcloud"
 }
