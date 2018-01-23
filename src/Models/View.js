@@ -34,5 +34,6 @@ const ViewSchema = new Mongoose.Schema(
 )
 
 const View = Mongoose.model("View", ViewSchema)
+View.ObjectId = Mongoose.Types.ObjectId
 
 export default View
