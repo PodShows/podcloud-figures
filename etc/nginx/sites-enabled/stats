@@ -1,15 +1,15 @@
-upstream podcloud-stats.production {
-  server unix:/tmp/podcloud.stats.production.sock fail_timeout=0;
+upstream podcloud-figures.production {
+  server unix:/tmp/podcloud.figures.production.sock fail_timeout=0;
   keepalive 32;
 }
 
 server {
   listen 80;
-  server_name stats.podcloud.fr;
+  server_name figures.podcloud.fr;
   server_tokens off;
 
-  access_log  /var/log/nginx/podcloud_stats_access.log;
-  error_log   /var/log/nginx/podcloud_stats_error.log;
+  access_log  /var/log/nginx/podcloud_figures_access.log;
+  error_log   /var/log/nginx/podcloud_figures_error.log;
 
   location / {
     client_max_body_size 0;
@@ -31,7 +31,7 @@ server {
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
 
-    proxy_pass http://podcloud-stats.production;
+    proxy_pass http://podcloud-figures.production;
   }
 
 }
