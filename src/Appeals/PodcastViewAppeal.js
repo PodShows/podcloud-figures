@@ -94,6 +94,7 @@ PodcastViewAppeal.process = payload => {
 
     const verified_payload = verifyPayload(payload)
 
+    const feed_id = View.ObjectId(verified_payload.feed_id)
     const ip = validIPOrDefault(verified_payload.ip)
     const user_agent = validUserAgentOrDefault(verified_payload.ua)
     const referer = validRefererOrDefault(verified_payload.ref)
@@ -144,6 +145,7 @@ PodcastViewAppeal.process = payload => {
 
     const registered_view = new View({
       source: "feed",
+      feed_id,
       ip,
       user_agent,
       city,
