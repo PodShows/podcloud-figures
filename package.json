@@ -1,5 +1,5 @@
 {
-  "name": "podcloud-figures",
+  "name": "podcloud-stats",
   "version": "1.0.4",
   "description": "Saving stats and redirecting to files",
   "scripts": {
