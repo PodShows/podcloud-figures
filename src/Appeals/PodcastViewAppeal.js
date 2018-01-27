@@ -47,7 +47,8 @@ const verifyPayload = payload => {
 
   try {
     return jwt.verify(payload, issuer_key, {
-      sub: "stats"
+      sub: "stats",
+      algorithms: ['RS256']
     })
   } catch (err) {
     if (
