@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
+require("process").env.NODE_CONFIG_DIR = __dirname+"/../config";
+
 require("../server.js");
