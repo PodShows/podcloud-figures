@@ -153,6 +153,7 @@ PodcastViewAppeal.process = payload => {
       country,
       referer,
       referer_host,
+      daily_timecode,
       daily_timecode_with_ip: daily_timecode + "_" + ip,
       monthly_timecode,
       monthly_timecode_with_ip: monthly_timecode + "_" + ip
