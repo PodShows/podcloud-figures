@@ -4,6 +4,10 @@ var nodeExternals = require("webpack-node-externals")
 
 module.exports = {
   target: "node",
+  node: {
+    __dirname: false
+  },
+
   externals: [nodeExternals()],
 
   entry: {
@@ -21,6 +25,11 @@ module.exports = {
   resolve: {
     extensions: [".js"]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      __DIST: true
+    })
+  ],
 
   module: {
     loaders: [
