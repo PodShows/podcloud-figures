@@ -1,12 +1,7 @@
-import * as jwt from "jsonwebtoken"
-
-import fs from "fs"
 import path from "path"
-
 import url from "url"
 
 import Appeal from "./Appeal"
-import { InvalidIssuerAppealError, InvalidAppealError } from "./Errors"
 import { empty, notEmpty } from "../Utils/index"
 
 import config from "config"
@@ -14,55 +9,7 @@ import { Mongo, View } from "../Models"
 
 import maxmind from "maxmind"
 
-const ISSUERS_KEYS_PATH = path.resolve(__dirname, "../../config/issuers_keys")
-const GEOLITE_PATH = path.join(__dirname, "/geoip/GeoLite2-City.mmdb")
-
-const decodePayload = payload => {
-  const decoded = jwt.decode(payload)
-
-  if (!decoded) throw new InvalidAppealError("Could not decode appeal")
-  if (!decoded.iss)
-    throw new InvalidIssuerAppealError("No issuer found in appeal")
-
-  return decoded
-}
-
-const checkAndGetIssuerKeyPath = payload => {
-  const decoded = decodePayload(payload)
-
-  const issuer_key_path = path.join(ISSUERS_KEYS_PATH, decoded.iss + ".pem")
-  try {
-    fs.accessSync(issuer_key_path, fs.constants.R_OK)
-  } catch (err) {
-    throw new InvalidIssuerAppealError(
-      "Could not find a readable issuer key at path: " + issuer_key_path
-    )
-  }
-  return issuer_key_path
-}
-
-const verifyPayload = payload => {
-  const issuer_key_path = checkAndGetIssuerKeyPath(payload)
-  const issuer_key = fs.readFileSync(issuer_key_path)
-
-  try {
-    return jwt.verify(payload, issuer_key, {
-      sub: "stats",
-      algorithms: ['RS256']
-    })
-  } catch (err) {
-    if (
-      err.name === "JsonWebTokenError" &&
-      err.message.indexOf("subject invalid") >= 0
-    ) {
-      throw new InvalidAppealError(
-        err.message.replace("jwt subject", "Appeal subject")
-      )
-    } else {
-      throw new InvalidAppealError(err.message)
-    }
-  }
-}
+const GEOLITE_PATH = path.join(__dirname, "./geoip/GeoLite2-City.mmdb")
 
 const validIPOrDefault = (ip, defaultValue = "0.0.0.0") => {
   return (maxmind.validate(ip) && ip) || defaultValue
@@ -93,12 +40,10 @@ PodcastViewAppeal.process = payload => {
       PodcastViewAppeal[MAXMIND] = maxmind.openSync(GEOLITE_PATH)
     }
 
-    const verified_payload = verifyPayload(payload)
-
-    const feed_id = View.ObjectId(verified_payload.fid)
-    const ip = validIPOrDefault(verified_payload.ip)
-    const user_agent = validUserAgentOrDefault(verified_payload.ua)
-    const referer = validRefererOrDefault(verified_payload.ref)
+    const feed_id = View.ObjectId(payload.fid)
+    const ip = validIPOrDefault(payload.ip)
+    const user_agent = validUserAgentOrDefault(payload.ua)
+    const referer = validRefererOrDefault(payload.ref)
 
     const referer_host = (() => {
       try {
@@ -159,9 +104,7 @@ PodcastViewAppeal.process = payload => {
       monthly_timecode_with_ip: monthly_timecode + "_" + ip
     })
 
-    Mongo.connect(config.get("mongodb")).then(() => {
-      registered_view.save().then(resolve, reject)
-    }, reject)
+    registered_view.save().then(resolve, reject)
   })
 }
 
