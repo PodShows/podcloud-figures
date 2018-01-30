@@ -34,7 +34,8 @@ const MAXMIND = Symbol.for("PodcastViewAppeal.maxmind")
 
 let _GEOLITE_PATH = path.join(
   __dirname,
-  (__DIST ? "../src/Appeals" : ".") + "/geoip/GeoLite2-City.mmdb"
+  (typeof __DIST !== "undefined" && __DIST ? "../src/Appeals" : ".") +
+    "/geoip/GeoLite2-City.mmdb"
 )
 
 Object.defineProperty(PodcastViewAppeal, "GEOLITE_PATH", {
