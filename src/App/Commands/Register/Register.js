@@ -25,11 +25,7 @@ export const RegisterCommand = {
       new Promise((resolve, reject) => {
         SignedPayload.decodeAndVerify(argv.appeal).then(verifiedPayload => {
           Mongo.connect(config.get("mongodb")).then(() => {
-            PodcastViewAppeal.process(verifiedPayload)
-              .then(resolve, reject)
-              .then(() => {
-                Mongo.getConnection().close()
-              })
+            PodcastViewAppeal.process(verifiedPayload).then(resolve, reject)
           }, reject)
         }, reject)
       })
