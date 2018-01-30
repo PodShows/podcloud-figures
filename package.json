@@ -1,15 +1,16 @@
 {
   "name": "podcloud-stats",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Saving stats and redirecting to files",
-  "main": "src/Stats.js",
+  "main": "dist/podcloud-stats.js",
   "scripts": {
     "nodemon": "nodemon ./server.js --exec babel-node",
     "test": "jest",
     "test-watch": "jest --watch",
     "coverage": "jest --coverage",
     "codecov": "npm run coverage && codecov",
-    "prettier": "prettier --write '{src/**/*.js,server.js}'"
+    "prettier": "prettier --write '{src/**/*.js,server.js}'",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "Pof Magicfingers <pof@podcloud.fr>",
@@ -36,18 +37,22 @@
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
+    "babel-eslint": "^8.2.1",
     "babel-istanbul": "^0.12.2",
     "babel-jest": "^22.0.6",
+    "babel-loader": "^6.2.3",
     "codecov": "^2.3.0",
     "eslint": "^4.12.1",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-loader": "^1.9.0",
     "eslint-plugin-prettier": "^2.3.1",
     "jest": "^21.2.1",
     "lodash": "^4.17.4",
     "mocha": "^3.5.3",
     "nodemon": "^1.9.1",
     "prettier": "^1.8.2",
-    "webpack": "^3.6.0"
+    "webpack": "^3.10.0",
+    "webpack-node-externals": "^1.6.0"
   },
   "jest": {
     "transform": {
