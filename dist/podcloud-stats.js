@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,19 +73,75 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Mongo = exports.View = undefined;
 
-var _SignedPayload = __webpack_require__(7);
+var _Mongo = __webpack_require__(8);
 
-exports.default = _SignedPayload.SignedPayload;
+var _Mongo2 = _interopRequireDefault(_Mongo);
+
+var _View = __webpack_require__(11);
+
+var _View2 = _interopRequireDefault(_View);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.View = _View2.default;
+exports.Mongo = _Mongo2.default;
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("path");
+module.exports = require("mongoose");
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("url");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(12);
+
+Object.keys(_utils).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _utils[key];
+    }
+  });
+});
+
+var _SignedPayload = __webpack_require__(13);
+
+Object.defineProperty(exports, "SignedPayload", {
+  enumerable: true,
+  get: function () {
+    return _interopRequireDefault(_SignedPayload).default;
+  }
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96,7 +152,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InvalidPayloadError = undefined;
 
-var _es6Error = __webpack_require__(11);
+var _es6Error = __webpack_require__(18);
 
 var _es6Error2 = _interopRequireDefault(_es6Error);
 
@@ -108,26 +164,14 @@ exports.InvalidPayloadError = InvalidPayloadError;
 exports.default = InvalidPayloadError;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("url");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("mongoose");
-
-/***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -138,16 +182,204 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PodcastViewAppeal = exports.SignedPayload = exports.Mongo = undefined;
 
-var _SignedPayload = __webpack_require__(0);
+var _Models = __webpack_require__(0);
 
-var _Appeals = __webpack_require__(13);
+var _Utils = __webpack_require__(3);
 
-exports.Mongo = Mongo;
-exports.SignedPayload = _SignedPayload.SignedPayload;
+var _Appeals = __webpack_require__(20);
+
+exports.Mongo = _Models.Mongo;
+exports.SignedPayload = _Utils.SignedPayload;
 exports.PodcastViewAppeal = _Appeals.PodcastViewAppeal;
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(1);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _process = __webpack_require__(9);
+
+var _process2 = _interopRequireDefault(_process);
+
+var _connectionstate = __webpack_require__(10);
+
+var _connectionstate2 = _interopRequireDefault(_connectionstate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const MONGOOSE_CONNECT_OPTIONS = { autoReconnect: true };
+
+_mongoose2.default.Promise = global.Promise;
+
+let lastConnStr = null;
+_mongoose2.default.connection.on("connecting", function () {
+  console.log("connecting to MongoDB...");
+});
+
+_mongoose2.default.connection.on("error", function (error) {
+  console.error("Error in MongoDB connection: " + error);
+  _mongoose2.default.disconnect();
+});
+
+_mongoose2.default.connection.on("connected", function () {
+  console.log("MongoDB connected!");
+});
+
+_mongoose2.default.connection.once("open", function () {
+  console.log("MongoDB connection opened!");
+});
+
+_mongoose2.default.connection.on("reconnected", function () {
+  console.log("MongoDB reconnected!");
+});
+
+_mongoose2.default.connection.on("disconnected", function () {
+  console.log("MongoDB disconnected!");
+  if (!mongoClosingExiting && lastConnStr) {
+    console.log("Reconnecting using last connection string !");
+    console.log(lastConnStr);
+    _mongoose2.default.connect(lastConnStr, MONGOOSE_CONNECT_OPTIONS);
+  }
+});
+
+let mongoClosingExiting = false;
+const mongoCloseOnExit = function () {
+  mongoClosingExiting = true;
+  _mongoose2.default.connection.close(function () {
+    console.log("Mongoose default connection disconnected through app termination");
+  });
+};
+_process2.default.on("exit", mongoCloseOnExit);
+_process2.default.on("SIGINT", mongoCloseOnExit);
+
+const Mongo = {
+  connect(conn_str) {
+    lastConnStr = conn_str;
+    return new Promise((resolve, reject) => {
+      _mongoose2.default.connect(conn_str).then(() => {
+        resolve(_mongoose2.default.connection, MONGOOSE_CONNECT_OPTIONS);
+      }, reject);
+    });
+  },
+  getConnection() {
+    return _mongoose2.default.connection;
+  }
+};
+
+exports.default = Mongo;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("process");
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose/lib/connectionstate");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(1);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _url = __webpack_require__(2);
+
+var _url2 = _interopRequireDefault(_url);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
+
+const ViewSchema = new _mongoose2.default.Schema({
+  source: String,
+
+  country: String,
+  city: String,
+  ip: String,
+  user_agent: String,
+  referer: String,
+  referer_host: String,
+
+  daily_timecode: Number,
+  monthly_timecode: Number,
+
+  daily_timecode_with_ip: String,
+  monthly_timecode_with_ip: String,
+
+  feed_id: ObjectId,
+
+  created_at: Date,
+  updated_at: Date
+}, {
+  timestamps: {
+    createdAt: "created_at",
+    updatedAt: "updated_at"
+  }
+});
+
+const View = _mongoose2.default.model("View", ViewSchema);
+View.ObjectId = _mongoose2.default.Types.ObjectId;
+
+exports.default = View;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+const notEmpty = exports.notEmpty = function (obj) {
+  return typeof obj === "string" && obj.trim().length > 0;
+};
+
+const empty = exports.empty = function (obj) {
+  return !notEmpty(obj);
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _SignedPayload = __webpack_require__(14);
+
+exports.default = _SignedPayload.SignedPayload;
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -158,19 +390,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SignedPayload = undefined;
 
-var _jsonwebtoken = __webpack_require__(8);
+var _jsonwebtoken = __webpack_require__(15);
 
 var jwt = _interopRequireWildcard(_jsonwebtoken);
 
-var _path = __webpack_require__(1);
+var _path = __webpack_require__(4);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _fs = __webpack_require__(9);
+var _fs = __webpack_require__(16);
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _Errors = __webpack_require__(10);
+var _Errors = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -238,19 +470,19 @@ exports.default = SignedPayload;
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 8 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 9 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 10 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -260,7 +492,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _InvalidPayloadError = __webpack_require__(2);
+var _InvalidPayloadError = __webpack_require__(5);
 
 Object.keys(_InvalidPayloadError).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -272,7 +504,7 @@ Object.keys(_InvalidPayloadError).forEach(function (key) {
   });
 });
 
-var _InvalidIssuerPayloadError = __webpack_require__(12);
+var _InvalidIssuerPayloadError = __webpack_require__(19);
 
 Object.keys(_InvalidIssuerPayloadError).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -285,13 +517,13 @@ Object.keys(_InvalidIssuerPayloadError).forEach(function (key) {
 });
 
 /***/ }),
-/* 11 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("es6-error");
 
 /***/ }),
-/* 12 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -302,7 +534,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InvalidIssuerPayloadError = undefined;
 
-var _InvalidPayloadError = __webpack_require__(2);
+var _InvalidPayloadError = __webpack_require__(5);
 
 var _InvalidPayloadError2 = _interopRequireDefault(_InvalidPayloadError);
 
@@ -314,7 +546,7 @@ exports.InvalidIssuerPayloadError = InvalidIssuerPayloadError;
 exports.default = InvalidIssuerPayloadError;
 
 /***/ }),
-/* 13 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -324,7 +556,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _PodcastViewAppeal = __webpack_require__(14);
+var _PodcastViewAppeal = __webpack_require__(21);
 
 Object.defineProperty(exports, "PodcastViewAppeal", {
   enumerable: true,
@@ -334,7 +566,7 @@ Object.defineProperty(exports, "PodcastViewAppeal", {
 });
 
 /***/ }),
-/* 14 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -345,27 +577,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PodcastViewAppeal = undefined;
 
-var _path = __webpack_require__(1);
+var _path = __webpack_require__(4);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _url = __webpack_require__(3);
+var _url = __webpack_require__(2);
 
 var _url2 = _interopRequireDefault(_url);
 
-var _Appeal = __webpack_require__(15);
+var _Appeal = __webpack_require__(22);
 
 var _Appeal2 = _interopRequireDefault(_Appeal);
 
-var _index = __webpack_require__(16);
+var _index = __webpack_require__(3);
 
-var _config = __webpack_require__(18);
+var _config = __webpack_require__(23);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _Models = __webpack_require__(19);
+var _Models = __webpack_require__(0);
 
-var _maxmind = __webpack_require__(23);
+var _maxmind = __webpack_require__(24);
 
 var _maxmind2 = _interopRequireDefault(_maxmind);
 
@@ -449,7 +681,7 @@ exports.default = PodcastViewAppeal;
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 15 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -462,189 +694,13 @@ class Appeal {}
 exports.default = Appeal;
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(17);
-
-Object.keys(_utils).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _utils[key];
-    }
-  });
-});
-
-var _SignedPayload = __webpack_require__(0);
-
-Object.defineProperty(exports, "SignedPayload", {
-  enumerable: true,
-  get: function () {
-    return _interopRequireDefault(_SignedPayload).default;
-  }
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-const notEmpty = exports.notEmpty = function (obj) {
-  return typeof obj === "string" && obj.trim().length > 0;
-};
-
-const empty = exports.empty = function (obj) {
-  return !notEmpty(obj);
-};
-
-/***/ }),
-/* 18 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = require("config");
 
 /***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Mongo = exports.View = undefined;
-
-var _Mongo = __webpack_require__(20);
-
-var _Mongo2 = _interopRequireDefault(_Mongo);
-
-var _View = __webpack_require__(22);
-
-var _View2 = _interopRequireDefault(_View);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.View = _View2.default;
-exports.Mongo = _Mongo2.default;
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(4);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _connectionstate = __webpack_require__(21);
-
-var _connectionstate2 = _interopRequireDefault(_connectionstate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_mongoose2.default.Promise = global.Promise;
-
-const Mongo = {
-  connect(conn_str) {
-    return new Promise((resolve, reject) => {
-      _mongoose2.default.connect(conn_str).then(() => {
-        resolve(_mongoose2.default.connection);
-      }, reject);
-    });
-  },
-  getConnection() {
-    return _mongoose2.default.connection;
-  }
-};
-
-exports.default = Mongo;
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-module.exports = require("mongoose/lib/connectionstate");
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(4);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _url = __webpack_require__(3);
-
-var _url2 = _interopRequireDefault(_url);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
-
-const ViewSchema = new _mongoose2.default.Schema({
-  source: String,
-
-  country: String,
-  city: String,
-  ip: String,
-  user_agent: String,
-  referer: String,
-  referer_host: String,
-
-  daily_timecode: Number,
-  monthly_timecode: Number,
-
-  daily_timecode_with_ip: String,
-  monthly_timecode_with_ip: String,
-
-  feed_id: ObjectId,
-
-  created_at: Date,
-  updated_at: Date
-}, {
-  timestamps: {
-    createdAt: "created_at",
-    updatedAt: "updated_at"
-  }
-});
-
-const View = _mongoose2.default.model("View", ViewSchema);
-View.ObjectId = _mongoose2.default.Types.ObjectId;
-
-exports.default = View;
-
-/***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = require("maxmind");
