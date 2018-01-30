@@ -1,6 +1,8 @@
-import { Mongo } from "../../Models"
+import { Mongo } from "../../../Models"
+import config from "config"
 
-import { PodcastViewAppeal } from "../../Appeals"
+import { PodcastViewAppeal } from "../../../Appeals"
+import { SignedPayload } from "../../../Utils"
 
 import promiseHandler from "yargs-promise-handler"
 
@@ -14,7 +16,6 @@ export const RegisterCommand = {
         choices: ["podcast", "episode"]
       })
       .positional("appeal", {
-        implies: "type",
         describe: "Signed JWT appeal"
       })
       .help()
@@ -22,11 +23,15 @@ export const RegisterCommand = {
   handler: promiseHandler(
     argv =>
       new Promise((resolve, reject) => {
-        PodcastViewAppeal.process(argv.appeal)
-          .then(resolve, reject)
-          .then(() => {
-            Mongo.getConnection().close()
-          })
+        SignedPayload.decodeAndVerify(argv.appeal).then(verifiedPayload => {
+          Mongo.connect(config.get("mongodb")).then(() => {
+            PodcastViewAppeal.process(verifiedPayload)
+              .then(resolve, reject)
+              .then(() => {
+                Mongo.getConnection().close()
+              })
+          }, reject)
+        }, reject)
       })
   )
 }
