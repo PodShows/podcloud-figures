@@ -9,8 +9,6 @@ import { Mongo, View } from "../Models"
 
 import maxmind from "maxmind"
 
-const GEOLITE_PATH = path.join(__dirname, "./geoip/GeoLite2-City.mmdb")
-
 const validIPOrDefault = (ip, defaultValue = "0.0.0.0") => {
   return (maxmind.validate(ip) && ip) || defaultValue
 }
@@ -34,10 +32,23 @@ export class PodcastViewAppeal extends Appeal {}
 
 const MAXMIND = Symbol.for("PodcastViewAppeal.maxmind")
 
+let _GEOLITE_PATH = path.join(
+  __dirname,
+  (__DIST ? "../src/Appeals" : ".") + "/geoip/GeoLite2-City.mmdb"
+)
+
+Object.defineProperty(PodcastViewAppeal, "GEOLITE_PATH", {
+  get: () => _GEOLITE_PATH,
+  set: val => {
+    _GEOLITE_PATH = val
+    PodcastViewAppeal[MAXMIND] = null
+  }
+})
+
 PodcastViewAppeal.process = payload => {
   return new Promise((resolve, reject) => {
     if (typeof PodcastViewAppeal[MAXMIND] !== "object") {
-      PodcastViewAppeal[MAXMIND] = maxmind.openSync(GEOLITE_PATH)
+      PodcastViewAppeal[MAXMIND] = maxmind.openSync(_GEOLITE_PATH)
     }
 
     const feed_id = View.ObjectId(payload.fid)
