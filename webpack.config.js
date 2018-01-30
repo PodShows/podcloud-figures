@@ -13,7 +13,9 @@ module.exports = {
   output: {
     path: path.join(__dirname, "dist"),
     filename: "podcloud-stats.js",
-    publicPath: "/"
+    library: "podcloud-stats",
+    libraryTarget: "umd",
+    umdNamedDefine: true
   },
 
   resolve: {
