@@ -180,7 +180,6 @@ module.exports = __webpack_require__(7);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PodcastViewAppeal = exports.SignedPayload = exports.Mongo = undefined;
 
 var _Models = __webpack_require__(0);
 
@@ -188,9 +187,7 @@ var _Utils = __webpack_require__(3);
 
 var _Appeals = __webpack_require__(20);
 
-exports.Mongo = _Models.Mongo;
-exports.SignedPayload = _Utils.SignedPayload;
-exports.PodcastViewAppeal = _Appeals.PodcastViewAppeal;
+exports.default = { Mongo: _Models.Mongo, SignedPayload: _Utils.SignedPayload, PodcastViewAppeal: _Appeals.PodcastViewAppeal };
 
 /***/ }),
 /* 8 */
@@ -219,52 +216,57 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const MONGOOSE_CONNECT_OPTIONS = { autoReconnect: true };
 
-_mongoose2.default.Promise = global.Promise;
-
 let lastConnStr = null;
-_mongoose2.default.connection.on("connecting", function () {
-  console.log("connecting to MongoDB...");
-});
-
-_mongoose2.default.connection.on("error", function (error) {
-  console.error("Error in MongoDB connection: " + error);
-  _mongoose2.default.disconnect();
-});
-
-_mongoose2.default.connection.on("connected", function () {
-  console.log("MongoDB connected!");
-});
-
-_mongoose2.default.connection.once("open", function () {
-  console.log("MongoDB connection opened!");
-});
-
-_mongoose2.default.connection.on("reconnected", function () {
-  console.log("MongoDB reconnected!");
-});
-
-_mongoose2.default.connection.on("disconnected", function () {
-  console.log("MongoDB disconnected!");
-  if (!mongoClosingExiting && lastConnStr) {
-    console.log("Reconnecting using last connection string !");
-    console.log(lastConnStr);
-    _mongoose2.default.connect(lastConnStr, MONGOOSE_CONNECT_OPTIONS);
-  }
-});
-
-let mongoClosingExiting = false;
-const mongoCloseOnExit = function () {
-  mongoClosingExiting = true;
-  _mongoose2.default.connection.close(function () {
-    console.log("Mongoose default connection disconnected through app termination");
-  });
-};
-_process2.default.on("exit", mongoCloseOnExit);
-_process2.default.on("SIGINT", mongoCloseOnExit);
 
 const Mongo = {
   connect(conn_str) {
+    if (lastConnStr == null) {
+      // First time
+      _mongoose2.default.Promise = global.Promise;
+
+      _mongoose2.default.connection.on("connecting", function () {
+        console.log("connecting to MongoDB...");
+      });
+
+      _mongoose2.default.connection.on("error", function (error) {
+        console.error("Error in MongoDB connection: " + error);
+        _mongoose2.default.disconnect();
+      });
+
+      _mongoose2.default.connection.on("connected", function () {
+        console.log("MongoDB connected!");
+      });
+
+      _mongoose2.default.connection.once("open", function () {
+        console.log("MongoDB connection opened!");
+      });
+
+      _mongoose2.default.connection.on("reconnected", function () {
+        console.log("MongoDB reconnected!");
+      });
+
+      _mongoose2.default.connection.on("disconnected", function () {
+        console.log("MongoDB disconnected!");
+        if (!mongoClosingExiting && lastConnStr) {
+          console.log("Reconnecting using last connection string !");
+          console.log(lastConnStr);
+          _mongoose2.default.connect(lastConnStr, MONGOOSE_CONNECT_OPTIONS);
+        }
+      });
+
+      let mongoClosingExiting = false;
+      const mongoCloseOnExit = function () {
+        mongoClosingExiting = true;
+        _mongoose2.default.connection.close(function () {
+          console.log("Mongoose default connection disconnected through app termination");
+        });
+      };
+      _process2.default.on("exit", mongoCloseOnExit);
+      _process2.default.on("SIGINT", mongoCloseOnExit);
+    }
+
     lastConnStr = conn_str;
+
     return new Promise((resolve, reject) => {
       _mongoose2.default.connect(conn_str).then(() => {
         resolve(_mongoose2.default.connection, MONGOOSE_CONNECT_OPTIONS);
