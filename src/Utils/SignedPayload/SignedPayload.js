@@ -1,10 +1,7 @@
 import * as jwt from "jsonwebtoken"
-import path from "path"
-import fs from "fs"
+import IssuersKeys from "./IssuersKeys"
 
 import { InvalidIssuerPayloadError, InvalidPayloadError } from "./Errors"
-
-const ISSUERS_KEYS_PATH = path.resolve(__dirname, "./issuers_keys")
 
 const decodePayload = payload => {
   const decoded = jwt.decode(payload)
@@ -16,23 +13,14 @@ const decodePayload = payload => {
   return decoded
 }
 
-const checkAndGetIssuerKeyPath = payload => {
+const getIssuerKey = payload => {
   const decoded = decodePayload(payload)
 
-  const issuer_key_path = path.join(ISSUERS_KEYS_PATH, decoded.iss + ".pem")
-  try {
-    fs.accessSync(issuer_key_path, fs.constants.R_OK)
-  } catch (err) {
-    throw new InvalidIssuerPayloadError(
-      "Could not find a readable issuer key at path: " + issuer_key_path
-    )
-  }
-  return issuer_key_path
+  return IssuersKeys.get(decoded.iss)
 }
 
 const verifyPayload = payload => {
-  const issuer_key_path = checkAndGetIssuerKeyPath(payload)
-  const issuer_key = fs.readFileSync(issuer_key_path)
+  const issuer_key = getIssuerKey(payload)
 
   try {
     return jwt.verify(payload, issuer_key, {
@@ -61,6 +49,7 @@ SignedPayload.decodeAndVerify = payload => {
       if (verified_payload && typeof verified_payload === "object") {
         resolve(verified_payload)
       } else {
+        /* istanbul ignore next */
         reject(verified_payload)
       }
     } catch (e) {
