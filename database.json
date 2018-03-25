@@ -1,0 +1,16 @@
+{
+  "development": {
+    "driver": "cassandra",
+    "host": "db,localhost",
+    "database": "podcloud_stats_dev"
+  },
+  "test": {
+    "driver": "cassandra",
+    "host": "db,localhost",
+    "database": "podcloud_stats_test"
+  },
+  "production": {
+    "driver": "cassandra",
+    "database": "podcloud_stats"
+  }
+}
