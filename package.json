@@ -4,7 +4,8 @@
   "description": "Saving stats and redirecting to files",
   "main": "dist/podcloud-stats.js",
   "scripts": {
-    "nodemon": "nodemon ./server.js --exec babel-node",
+    "start": "bin/stats",
+    "nodemon": "nodemon --exec npm start -- server",
     "test": "jest",
     "test-watch": "jest --watch",
     "coverage": "jest --coverage",

@@ -42,7 +42,7 @@ class Server {
     this.app.get("/e/:guid", (req, res) =>
       sendResponse(res, 418, "Not implemented yet.")
     )
-    this.app.all("*", (req, res) => send404())
+    this.app.all("*", (req, res) => send404(res))
   }
 
   start() {
