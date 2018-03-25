@@ -1,4 +1,4 @@
 {
-  "listen": 8880,
+  "listen": 3000,
   "mongodb": "mongodb://localhost/podcloud_development"
 }
