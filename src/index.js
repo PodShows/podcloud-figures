@@ -1,7 +1,5 @@
-const { GraphQLServer } = require('graphql-yoga')
-const graphql = require('./graphql')
-
-console.log(graphql);
+import { GraphQLServer } from "graphql-yoga";
+import graphql from "./graphql";
 
 const server = new GraphQLServer({
   ...graphql,

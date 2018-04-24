@@ -1,6 +1,8 @@
 import gql from 'graphql-tag'
 
 const typeDefs = gql`
-type Query
+type Query {
+    hello: String
+}
 `
 export default typeDefs;
