@@ -3,11 +3,11 @@ sudo: false
 node_js:
 - 6.11.3
 install:
-- npm install
+- yarn install
 env:
 - NODE_ENV=test
 script:
-- npm run codecov
+- yarn codecov
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_17c9c2b55791_key -iv $encrypted_17c9c2b55791_iv
   -in .deploy_rsa.enc -out /tmp/deploy_rsa -d

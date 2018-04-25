@@ -1,23 +1,30 @@
-const jwt = require('jsonwebtoken')
-
-function getUserId(ctx) {
-  const Authorization = ctx.request.get('Authorization')
-  if (Authorization) {
-    const token = Authorization.replace('Bearer ', '')
-    const { userId } = jwt.verify(token, process.env.APP_SECRET)
-    return userId
-  }
-
-  throw new AuthError()
-}
+import jwt from "jsonwebtoken";
+import config from "config";
 
 class AuthError extends Error {
   constructor() {
-    super('Not authorized')
+    super("Not authorized");
   }
 }
 
-module.exports = {
-  getUserId,
-  AuthError
+export function authenticatedToken(token) {
+  const decoded = jwt.decode(token, null, { subject: "stats" });
+
+  const issuer_pubkey = config.get(`IssuersKeys.${decoded.iss}`);
+
+  return jwt.verify(token, issuer_pubkey);
+}
+
+export function authenticateRequest(ctx) {
+  try {
+    ctx.auth = authenticatedToken(
+      ctx.request.get("Authorization").replace("Bearer ", "")
+    );
+
+    return ctx;
+  } catch (e) {
+    console.error(e);
+  }
+
+  throw new AuthError();
 }

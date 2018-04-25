@@ -4,10 +4,15 @@
     "start": "nodemon -e js,graphql -x node -r dotenv/config server.js",
     "debug": "nodemon -e js,graphql -x node --inspect -r dotenv/config server.js",
     "playground": "graphql playground",
-    "dev": "npm-run-all --parallel start playground"
+    "dev": "npm-run-all --parallel start playground",
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "codecov": "jest --coverage",
+    "new_issuer_key": "scripts/create_issuer_key.sh"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
+    "config": "^1.30.0",
     "graphql-tag": "^2.9.1",
     "graphql-yoga": "1.8.5",
     "jsonwebtoken": "8.2.1"
@@ -19,6 +24,8 @@
     "babel-register": "^6.26.0",
     "dotenv": "5.0.1",
     "graphql-cli": "2.15.9",
+    "jest": "^22.4.3",
+    "jest-babel": "^1.0.1",
     "nodemon": "1.17.3",
     "npm-run-all": "4.1.2"
   }
