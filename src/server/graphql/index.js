@@ -3,10 +3,14 @@ import resolvers from "./resolvers";
 import gql from "graphql-tag";
 
 export default {
-    typeDefs: [typeDefs, gql`
+  typeDefs: [
+    typeDefs,
+    gql`
       schema {
         query: Query
+        mutation: Mutation
       }
-    `],
-    resolvers
+    `
+  ],
+  resolvers
 };
