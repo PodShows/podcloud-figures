@@ -6,9 +6,17 @@ export default {
   typeDefs: [
     typeDefs,
     gql`
+      type Queries {
+        views: ViewQueries
+      }
+
+      type Mutations {
+        views: ViewMutations
+      }
+
       schema {
-        query: Query
-        mutation: Mutation
+        query: Queries
+        mutation: Mutations
       }
     `
   ],

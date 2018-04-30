@@ -1,4 +1,4 @@
-import { saveView } from "./saveView/resolvers";
+import saveView from "./saveView/resolvers";
 
 const resolvers = {
   ...saveView

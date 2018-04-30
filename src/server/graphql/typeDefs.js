@@ -1,4 +1,3 @@
-import { typeDefs as QueryTypeDefs } from "./Query";
-import { typeDefs as MutationTypeDefs } from "./Mutation";
+import Views from "./Views";
 
-export default () => [QueryTypeDefs, MutationTypeDefs];
+export default () => [Views.Queries.typeDefs, Views.Mutations.typeDefs];
