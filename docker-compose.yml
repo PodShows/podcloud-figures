@@ -3,6 +3,10 @@ services:
   cassandra_migrate:
     image: python
     network_mode: host
+    depends_on: 
+      - cassandra0
+      - cassandra1
+      - cassandra2
     build: 
         context: .
         dockerfile: cassandra-migrate.dockerfile
@@ -19,6 +23,8 @@ services:
     container_name: cassandra1
     ports:
       - 9142:9042
+    depends_on: 
+      - cassandra0
     links:
       - cassandra0:seed
     environment:
@@ -29,6 +35,8 @@ services:
     container_name: cassandra2
     ports:
       - 9242:9042
+    depends_on: 
+      - cassandra0
     links:
       - cassandra0:seed
     environment:
