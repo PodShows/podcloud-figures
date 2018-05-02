@@ -1,16 +1,5 @@
 version: '2'
 services:
-  cassandra_migrate:
-    image: python
-    network_mode: host
-    depends_on: 
-      - cassandra0
-      - cassandra1
-      - cassandra2
-    build: 
-        context: .
-        dockerfile: cassandra-migrate.dockerfile
-
   cassandra0:
     image: cassandra
     container_name: cassandra0

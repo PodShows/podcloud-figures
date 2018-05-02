@@ -8,7 +8,8 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "codecov": "jest --coverage",
-    "new_issuer_key": "scripts/create_issuer_key.sh"
+    "new_issuer_key": "scripts/create_issuer_key.sh",
+    "cassandra-migrate": "scripts/cassandra-migrate.sh"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
