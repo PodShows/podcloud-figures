@@ -1,5 +1,6 @@
 export default {
   saveView: ({ FeedID, IP, UserAgent, Referer } = {}, ctx) => {
+    console.log(ctx);
     return new Promise((resolve, reject) => {
       const now = +new Date();
       const today = new Date(+now);
@@ -10,7 +11,7 @@ export default {
       const thismonth = new Date(+today);
       thismonth.setUTCDate(0);
 
-      ctx.cassandra.execute(
+      ctx.db.execute(
         `INSERT INTO  (
           source,
           feed_id,
@@ -26,7 +27,13 @@ export default {
           monthly_timecode_with_ip,
           created_at,
           updated_at
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        ) VALUES (
+          $1,$2,$3,
+          $4,$5,$6,
+          $7,$8,$9,
+          $10,$11,$12,
+          $13,$14
+        )`,
         [
           "rss",
           FeedID,

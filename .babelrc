@@ -1,9 +1,4 @@
 {
-    "presets": [
-        "env"
-    ],
-    "plugins": [
-        "transform-object-rest-spread",
-        "inline-import-graphql-ast"
-    ]
+  presets: ["env"],
+  plugins: ["transform-object-rest-spread", "import-graphql"]
 }
