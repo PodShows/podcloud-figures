@@ -1,5 +1,5 @@
 import Server from "./server";
-import postgres from "pg";
+const db = new postgres.Client();
 
 const app = (trying = 0) => {
   const db = new postgres.Client();

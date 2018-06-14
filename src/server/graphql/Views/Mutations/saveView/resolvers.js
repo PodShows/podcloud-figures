@@ -1,6 +1,7 @@
+import { isGUID, isIP, isString, isEmpty } from "../../../../../utils";
+
 export default {
   saveView: ({ FeedID, IP, UserAgent, Referer } = {}, ctx) => {
-    console.log(ctx);
     return new Promise((resolve, reject) => {
       const now = +new Date();
       const today = new Date(+now);
@@ -11,51 +12,60 @@ export default {
       const thismonth = new Date(+today);
       thismonth.setUTCDate(0);
 
-      ctx.db.execute(
-        `INSERT INTO  (
-          source,
-          feed_id,
-          ip,
-          user_agent,
-          city,
-          country,
-          referer,
-          referer_host,
-          daily_timecode,
-          daily_timecode_with_ip,
-          monthly_timecode,
-          monthly_timecode_with_ip,
-          created_at,
-          updated_at
-        ) VALUES (
-          $1,$2,$3,
-          $4,$5,$6,
-          $7,$8,$9,
-          $10,$11,$12,
-          $13,$14
-        )`,
+      if (
+        !isGUID(FeedID) ||
+        !isIP(IP) ||
+        !isString(UserAgent) ||
+        isEmpty(UserAgent) ||
+        !isString(Referer) ||
+        isEmpty(Referer)
+      ) {
+        return reject(false);
+      }
+
+      ctx.db.query(
+        `
+        INSERT INTO views (
+              source,
+              feed_id,
+              ip,
+              user_agent,
+              city,
+              country,
+              referer,
+              referer_host,
+              daily_timecode,
+              daily_timecode_with_ip,
+              monthly_timecode,
+              monthly_timecode_with_ip,
+              created_at,
+              updated_at
+            ) VALUES (
+              $1,$2,$3,
+              $4,$5,$6,
+              $7,$8,$9,
+              $10,$11,$12,
+              current_timestamp,
+              current_timestamp);`,
         [
           "rss",
           FeedID,
           IP,
           UserAgent,
-          "city",
+          JSON.stringify("city"),
           "country",
           Referer,
           "referer_host",
           +today,
           `${+today}_${IP}`,
           +thismonth,
-          `${+thismonth}_${IP}`,
-          +now,
-          +now
+          `${+thismonth}_${IP}`
         ],
-        function(err, results) {
+        (err, results) => {
           if (err) {
-            console.error(err);
             return reject(err);
           }
-          resolve(JSON.stringify(results));
+          resolve(true);
         }
       );
     });

@@ -8,7 +8,7 @@ export default [
         IP: String
         UserAgent: String
         Referer: String
-      ): String
+      ): Boolean
     }
   `
 ];
