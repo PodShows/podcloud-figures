@@ -9,7 +9,7 @@ export default class Server extends GraphQLServer {
       ...graphql,
       context: req => ({
         ...req,
-        db: options.db
+        ...options.ctx
       })
     });
   }

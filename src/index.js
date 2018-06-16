@@ -1,13 +1,15 @@
 import Server from "./server";
 const db = new postgres.Client();
 
+const maxmind = maxmind.openSync("../geoip/GeoLite2-City.mmdb");
+
 const app = (trying = 0) => {
   const db = new postgres.Client();
   db.connect()
     .then(
       function() {
         const server = new Server();
-        return server.start({ port: 5000, db }, () =>
+        return server.start({ port: 5000, ctx: { db, maxmind } }, () =>
           console.log("Server is running on http://localhost:5000")
         );
       },

@@ -1,22 +1,14 @@
 import saveView from "./resolvers";
 import postgres from "pg";
+import testContext from "../../../../../tests/testContext.js"
 
 describe("Views", () => {
   describe("saveView", () => {
     test("reject to false with no arguments", async () => {
-      const db = new postgres.Client({
-        user: "postgres",
-        host: "localhost",
-        database: "podcloud_stats_test"
-      });
-
-      await db.connect();
       try {
         await saveView.saveView(
           {},
-          {
-            db
-          }
+          await testContext()
         );
       } catch (err) {
         expect(err).toBe(false);
@@ -38,9 +30,7 @@ describe("Views", () => {
           UserAgent: "UserAgent",
           Referer: "http://referer.com/"
         },
-        {
-          db
-        }
+        await testContext()
       );
       expect(response).toBe(true);
     });

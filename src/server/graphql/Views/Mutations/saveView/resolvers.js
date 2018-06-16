@@ -23,6 +23,20 @@ export default {
         return reject(false);
       }
 
+			const lookup = ctx.maxmind.get(IP)
+			const country =
+				(lookup &&
+					((lookup.represented_country && lookup.represented_country.iso_code) ||
+						(lookup.country && lookup.country.iso_code))) ||
+				null
+
+			const city =
+				(lookup &&
+					lookup.city &&
+					lookup.city.names &&
+					JSON.stringify(lookup.city.names)) ||
+				null
+
       ctx.db.query(
         `
         INSERT INTO views (
@@ -52,8 +66,8 @@ export default {
           FeedID,
           IP,
           UserAgent,
-          JSON.stringify("city"),
-          "country",
+					city,
+					country,
           Referer,
           "referer_host",
           +today,
