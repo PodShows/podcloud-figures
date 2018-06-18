@@ -1,7 +1,40 @@
+import url from "url";
 import { isGUID, isIP, isString, isEmpty } from "../../../../../utils";
 
+const validIPOrDefault = (ip, defaultValue = "0.0.0.0") => {
+  return (isIP(ip) && ip) || defaultValue;
+};
+
+const validUserAgentOrDefault = (user_agent, defaultValue = "Unknown") => {
+  return isString(user_agent) && !isEmpty(user_agent)
+    ? user_agent
+    : defaultValue;
+};
+
+const validRefererOrDefault = (referer, defaultValue = null) => {
+  try {
+    return isString(referer) && !isEmpty(referer)
+      ? url.parse(referer.trim()).href
+      : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
+};
+
+const validNotEmptyOrDefault = (value, defaultValue = "na") =>
+  isString(value) && !isEmpty(value) ? value : defaultValue;
+
 export default {
-  saveView: ({ FeedID, IP, UserAgent, Referer } = {}, ctx) => {
+  saveView: (
+    {
+      FeedID,
+      IP = null,
+      UserAgent = null,
+      Referer = null,
+      source = "feed"
+    } = {},
+    ctx
+  ) => {
     return new Promise((resolve, reject) => {
       const now = +new Date();
       const today = new Date(+now);
@@ -9,33 +42,44 @@ export default {
       today.setUTCMinutes(0);
       today.setUTCSeconds(0);
       today.setUTCMilliseconds(0);
+
       const thismonth = new Date(+today);
       thismonth.setUTCDate(0);
 
-      if (
-        !isGUID(FeedID) ||
-        !isIP(IP) ||
-        !isString(UserAgent) ||
-        isEmpty(UserAgent) ||
-        !isString(Referer) ||
-        isEmpty(Referer)
-      ) {
+      if (!isGUID(FeedID)) {
         return reject(false);
       }
 
-			const lookup = ctx.maxmind.get(IP)
-			const country =
-				(lookup &&
-					((lookup.represented_country && lookup.represented_country.iso_code) ||
-						(lookup.country && lookup.country.iso_code))) ||
-				null
+      const parsedSource =
+        isString(source) &&
+        !isEmpty(source) &&
+        /^(feed|site)$/i.test(source.trim())
+          ? source.trim().toLowerCase()
+          : "feed";
 
-			const city =
-				(lookup &&
-					lookup.city &&
-					lookup.city.names &&
-					JSON.stringify(lookup.city.names)) ||
-				null
+      const parsedIP = validIPOrDefault(IP);
+      const parsedUserAgent = validUserAgentOrDefault(UserAgent);
+      const parsedReferer = validRefererOrDefault(Referer);
+
+      let parsedRefererHost = null;
+      try {
+        parsedRefererHost = url.parse(parsedReferer).hostname;
+      } catch (e) {}
+
+      const lookup = ctx.maxmind.get(parsedIP);
+      const country =
+        (lookup &&
+          ((lookup.represented_country &&
+            lookup.represented_country.iso_code) ||
+            (lookup.country && lookup.country.iso_code))) ||
+        null;
+
+      const city =
+        (lookup &&
+          lookup.city &&
+          lookup.city.names &&
+          JSON.stringify(lookup.city.names)) ||
+        null;
 
       ctx.db.query(
         `
@@ -62,18 +106,18 @@ export default {
               current_timestamp,
               current_timestamp);`,
         [
-          "rss",
+          parsedSource,
           FeedID,
-          IP,
-          UserAgent,
-					city,
-					country,
-          Referer,
-          "referer_host",
+          parsedIP,
+          parsedUserAgent,
+          city,
+          country,
+          parsedReferer,
+          parsedRefererHost,
           +today,
-          `${+today}_${IP}`,
+          `${+today}_${parsedIP}`,
           +thismonth,
-          `${+thismonth}_${IP}`
+          `${+thismonth}_${parsedIP}`
         ],
         (err, results) => {
           if (err) {

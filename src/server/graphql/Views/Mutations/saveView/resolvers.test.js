@@ -1,15 +1,12 @@
 import saveView from "./resolvers";
 import postgres from "pg";
-import testContext from "../../../../../tests/testContext.js"
+import testContext from "../../../../../tests/testContext.js";
 
 describe("Views", () => {
   describe("saveView", () => {
     test("reject to false with no arguments", async () => {
       try {
-        await saveView.saveView(
-          {},
-          await testContext()
-        );
+        await saveView.saveView({}, await testContext());
       } catch (err) {
         expect(err).toBe(false);
       }

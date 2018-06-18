@@ -4,10 +4,11 @@ export default [
   gql`
     type ViewMutations {
       saveView(
-        FeedID: String
+        FeedID: String!
         IP: String
         UserAgent: String
         Referer: String
+        Source: String
       ): Boolean
     }
   `
