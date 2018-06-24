@@ -12,33 +12,53 @@ describe("Views", () => {
       }
     });
 
-    test("save a view", async () => {
-      const context = await testContext();
+    describe("save a view", () => {
       const viewData = {
-        FeedID: "110e8400-e29b-11d4-a716-446655440000",
-        IP: "127.0.0.1",
+        FeedID: "00000000-0000-0000-0000-000000000000",
+        IP: "194.153.110.160", // paris.fr IP :D
         UserAgent: "UserAgent test " + +new Date(),
         Referer: "http://referer.com/"
       };
-      const response = await saveView.saveView(viewData, context);
-      expect(response).toBe(true);
 
-      const result = await new Promise((resolve, reject) => {
-        context.db.query(
-          `
-        SELECT * FROM views WHERE user_agent = $1
-      `,
-          [viewData.UserAgent],
-          (err, results) => {
-            if (err) {
-              return reject(err);
+      let context;
+      let response;
+      let result;
+      let insert;
+
+      beforeAll(async () => {
+        context = await testContext();
+        response = await saveView.saveView(viewData, context);
+        result = await new Promise((resolve, reject) => {
+          context.db.query(
+            `
+            SELECT * FROM views WHERE user_agent = $1
+            `,
+            [viewData.UserAgent],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(results);
             }
-            resolve(results);
-          }
-        );
+          );
+        });
+        insert = (result && result.rowCount && result.rows[0]) || null;
       });
-      expect(result).toHaveProperty('rowCount', 1);
-      expect(result.rows[0]).toHaveProperty('user_agent', viewData.UserAgent);
+
+      test("saves a view", async () => {
+        expect(response).toBe(true);
+        expect(result).toHaveProperty("rowCount", 1);
+        expect(result.rows[0]).toHaveProperty("user_agent", viewData.UserAgent);
+      });
+
+      test("detect city and country", async () => {
+        expect(insert).toHaveProperty("country", "FR");
+        expect(insert.city).toHaveProperty("fr", "Paris");
+      });
+
+      test("scramble IP into database", async () => {
+        expect(insert.ip).not.toBe(viewData.IP);
+      });
     });
   });
 });

@@ -19,7 +19,7 @@ exports.up = function(db) {
     id: { type: "serial", primaryKey: true },
     source: { type: "text" },
     feed_id: { type: "uuid" },
-    ip: { type: "inet" },
+    ip: { type: "text" },
     user_agent: { type: "text" },
     city: { type: "json" },
     country: { type: "text" },
