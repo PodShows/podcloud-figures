@@ -1,16 +1,13 @@
 import postgres from "pg";
 import maxmind from "maxmind";
 import path from "path";
+import config from "config";
 
 let context;
 
 const testContext = async () => {
   if (!context) {
-    const db = new postgres.Client({
-      user: "postgres",
-      host: "localhost",
-      database: "podcloud_stats_test"
-    });
+    const db = new postgres.Client(config.get("postgres"));
 
     await db.connect();
 

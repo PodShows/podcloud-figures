@@ -2,6 +2,6 @@
   "postgres": {
     "user": "postgres",
     "host": "localhost",
-    "database": "podcloud_stats_test"
+    "database": "podcloud_stats_dev"
   }
 }

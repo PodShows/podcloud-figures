@@ -2,7 +2,11 @@ import crypto from "crypto";
 import url from "url";
 import { isGUID, isIP, isString, isEmpty } from "../../../../../utils";
 
-const sha512 = x => crypto.createHash('sha512').update(x, 'utf8').digest('hex');
+const sha512 = x =>
+  crypto
+    .createHash("sha512")
+    .update(x, "utf8")
+    .digest("hex");
 
 const validIPOrDefault = (ip, defaultValue = "0.0.0.0") => {
   return (isIP(ip) && ip) || defaultValue;

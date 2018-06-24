@@ -1,5 +1,6 @@
 import config from "config";
 import { GraphQLServer } from "graphql-yoga";
+import AuthRequest from "./AuthRequest";
 import graphql from "./graphql";
 
 export default class Server extends GraphQLServer {
@@ -9,6 +10,7 @@ export default class Server extends GraphQLServer {
       ...graphql,
       context: req => ({
         ...req,
+        auth: authRequest(req),
         ...options.ctx
       })
     });

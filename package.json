@@ -11,7 +11,7 @@
     "new_issuer_key": "scripts/create_issuer_key.sh",
     "db-migrate": "db-migrate",
     "prettier": "prettier",
-    "prettier-all": "prettier --write 'src/**/*.js' '*.js'"
+    "prettier-all": "prettier --write 'src/**/*.js' '*.js' '*.json' 'config/*.js' 'config/*.json'"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
