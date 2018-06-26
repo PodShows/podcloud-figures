@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import config from "config";
 
 const checkRequestHash = (request, hash) =>
   crypto
@@ -9,7 +10,6 @@ const checkRequestHash = (request, hash) =>
 
 export default function AuthRequest(request) {
   const authorization = request.get("authorization");
-
   if (authorization && authorization.startsWith("Bearer")) {
     const payload = authorization.replace(/Bearer\s+/, "");
     const decoded = jwt.decode(payload);
@@ -22,7 +22,7 @@ export default function AuthRequest(request) {
           });
 
           if (
-            checkRequestHash(request, verified.requestBodyHash)
+            checkRequestHash(request, verified.stamp)
           ) {
             request.auth = {
               issuer: verified.iss,
@@ -40,9 +40,8 @@ export default function AuthRequest(request) {
       }
     } else {
       console.error("Cannot find a valid JWT with stats subject.");
-      console.error("found:", payload);
+      console.error("found:", decoded ? decoded.sub : decoded);
     }
-
   }
   
   if (!request.auth) {
