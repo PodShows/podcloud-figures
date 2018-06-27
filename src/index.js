@@ -1,4 +1,4 @@
-import Server from "./server";
+import Server from "./Server";
 import postgres from "pg";
 import maxmind from "maxmind";
 import path from "path";

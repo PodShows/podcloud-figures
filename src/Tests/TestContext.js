@@ -2,10 +2,11 @@ import postgres from "pg";
 import maxmind from "maxmind";
 import path from "path";
 import config from "config";
+import AuthRequest from "../Server/AuthRequest";
 
 let context;
 
-const testContext = async () => {
+const TestContext = async () => {
   if (!context) {
     const db = new postgres.Client(config.get("postgres"));
 
@@ -15,10 +16,17 @@ const testContext = async () => {
       db,
       maxmind: maxmind.openSync(
         path.resolve(__dirname + "/../../geoip/GeoLite2-City.mmdb")
-      )
+      ),
+      auth: AuthRequest({ get: () => {} })
     };
   }
+
   return context;
 };
 
-export default testContext;
+export const MakeAuthenticated = ctx => ({
+  ...ctx,
+  auth: { isAuthenticated: true, issuer: "debug", scope: ["*"] }
+});
+
+export default TestContext;

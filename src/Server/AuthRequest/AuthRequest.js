@@ -10,6 +10,7 @@ const checkRequestHash = (request, hash) =>
 
 export default function AuthRequest(request) {
   const authorization = request.get("authorization");
+  const auth = { isAuthenticated: false, scope: null, user: null };
   if (authorization && authorization.startsWith("Bearer")) {
     const payload = authorization.replace(/Bearer\s+/, "");
     const decoded = jwt.decode(payload);
@@ -21,14 +22,10 @@ export default function AuthRequest(request) {
             algorithms: ["RS256"]
           });
 
-          if (
-            checkRequestHash(request, verified.stamp)
-          ) {
-            request.auth = {
-              issuer: verified.iss,
-              isAuthenticated: true,
-              scope: null
-            };
+          if (checkRequestHash(request, verified.stamp)) {
+            auth.issuer = verified.iss;
+            auth.isAuthenticated = true;
+            auth.scope = null;
           } else {
             console.error("Request hash mismatch");
           }
@@ -43,10 +40,8 @@ export default function AuthRequest(request) {
       console.error("found:", decoded ? decoded.sub : decoded);
     }
   }
-  
-  if (!request.auth) {
-    request.auth = { isAuthenticated: false, scope: null, user: null };
-  }
 
-  return request.auth;
+  request.auth = auth;
+
+  return auth;
 }

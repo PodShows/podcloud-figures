@@ -1,3 +1,3 @@
 import AuthRequest from "./AuthRequest";
 
-export default AuthRequest
+export default AuthRequest;
