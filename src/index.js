@@ -8,7 +8,7 @@ const mxmnd = maxmind.openSync(
   path.resolve(__dirname + "/../geoip/GeoLite2-City.mmdb")
 );
 
-const app = (trying = 0) => {
+const App = (trying = 0) => {
   const db = new postgres.Client(
     (config.has("postgres") && config.get("postgres")) || undefined
   );
@@ -16,9 +16,10 @@ const app = (trying = 0) => {
   db.connect()
     .then(
       function() {
-        const server = new Server();
-        return server.start({ port: 5000, ctx: { db, mxmnd } }, () =>
-          console.log("Server is running on http://localhost:5000")
+        const server = new Server({context: { db, mxmnd }});
+        const port = config.has("port") && config.get("port") || 5000;
+        return server.start({ port }, () =>
+          console.log(`Server is running on http://localhost:${port}`);
         );
       },
       err => {
@@ -33,4 +34,4 @@ const app = (trying = 0) => {
     });
 };
 
-app();
+export default App;

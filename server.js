@@ -1,2 +1,4 @@
 require("babel-register");
-require("./src/index.js");
+const App = require("./src/index.js");
+
+App();
