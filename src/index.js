@@ -18,8 +18,8 @@ const App = (trying = 0) => {
       function() {
         const server = new Server({context: { db, mxmnd }});
         const port = config.has("port") && config.get("port") || 5000;
-        return server.start({ port }, () =>
-          console.log(`Server is running on http://localhost:${port}`);
+        return server.start({ port }).then(() =>
+          console.log(`Server is running on http://localhost:${port}`)
         );
       },
       err => {

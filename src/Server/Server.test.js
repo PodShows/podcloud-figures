@@ -13,11 +13,8 @@ describe("Server", () => {
     testCtx = await TestContext();
     delete testCtx.auth;
     db = testCtx.db;
-    srv = new Server({ testCtx });
-    return new Promise(resolve => srv.start({ port, playground: false }, () => {
-      console.log(`Test server is running on http:\/\/localhost:${port}`);
-      resolve();
-    }));
+    srv = new Server({ ctx: testCtx });
+    await srv.start({ port });
   });
 
   it("should answer to requests", () => {
@@ -25,7 +22,7 @@ describe("Server", () => {
   });
 
   afterAll(async () => {
-    server.stop();
+    await server.stop();
   });
 
 });
