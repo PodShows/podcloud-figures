@@ -1,3 +1,3 @@
 import Views from "./Views";
 
-export default () => [Views.Queries.typeDefs, Views.Mutations.typeDefs];
+export default () => [...Views.Queries.typeDefs, ...Views.Mutations.typeDefs];

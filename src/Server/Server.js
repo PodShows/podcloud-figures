@@ -1,37 +1,40 @@
 import config from "config";
 import express from 'express';
 import bodyParser from 'body-parser';
+import { bodyParserGraphQL } from 'body-parser-graphql';
 import { graphqlExpress, graphiqlExpress } from "apollo-server-express";
 import AuthRequest from "./AuthRequest";
-import { MakeSchema } from "./graphql";
+import { schema } from "./graphql";
 
 const server = Symbol.for("server");
 
 export default class Server {
   constructor(options = {}) {
-    this.server = express();
+    this.app = express();
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParserGraphQL());
 
-    this.server.use('/graphql', bodyParser.json(), graphqlExpress(req => ({
-      schema: MakeSchema(),
+    if(options.graphiql !== false) {
+      this.app.get('/graphiql', graphiqlExpress({ endpointURL: '/' })); // if you want GraphiQL enabled
+    }
+    
+    this.app.use('/', graphqlExpress(req => ({
+      schema,
       context: {
         ...req,
-        auth: authRequest(req),
+        auth: AuthRequest(req),
         ...options.ctx
       }
     })));
-
-    if(options.graphiql !== false) {
-      this.server.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' })); // if you want GraphiQL enabled
-    }
   }
 
   start({ port = 5000 }) {
     return new Promise((resolve, reject) => {
-      this.server.listen(port, (err) => { 
+      this.server = this.app.listen(port, (err) => { 
         if(err) { 
           reject(err); 
         } else { 
-          resolve() 
+          resolve(this.server);
         }
       })
     });
@@ -39,13 +42,18 @@ export default class Server {
 
   stop() {
     return new Promise((resolve, reject) => { 
-      this.server.close((err) => { 
-        if(err) { 
-          reject(err); 
-        } else { 
-          resolve() 
-        }
-      });
+      if (this.server) { 
+        this.server.close((err) => { 
+          if(err) { 
+            reject(err); 
+          } else { 
+            this.server = null;
+            resolve();
+          }
+        });
+      } else {
+        resolve();
+      }
     });
   }
 }
