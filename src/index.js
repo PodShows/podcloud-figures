@@ -16,11 +16,13 @@ const App = (trying = 0) => {
   db.connect()
     .then(
       function() {
-        const server = new Server({context: { db, mxmnd }});
-        const port = config.has("port") && config.get("port") || 5000;
-        return server.start({ port }).then(() =>
-          console.log(`Server is running on http://localhost:${port}`)
-        );
+        const server = new Server({ context: { db, mxmnd } });
+        const port = (config.has("port") && config.get("port")) || 5000;
+        return server
+          .start({ port })
+          .then(() =>
+            console.log(`Server is running on http://localhost:${port}`)
+          );
       },
       err => {
         // 1 second minimum, 12 seconds maximum

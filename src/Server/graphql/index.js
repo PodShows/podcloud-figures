@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from "graphql-tools";
 import { default as types } from "./typeDefs";
 import resolvers from "./resolvers";
 
@@ -21,12 +21,7 @@ const SchemaDefinition = `
   }
 `;
 
-export const typeDefs = [
-  SchemaDefinition,
-  Queries,
-  Mutations,
-  types
-];
+export const typeDefs = [SchemaDefinition, Queries, Mutations, types];
 
 export const schema = makeExecutableSchema({
   typeDefs,

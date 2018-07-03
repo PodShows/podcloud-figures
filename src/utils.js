@@ -20,3 +20,7 @@ export function isGUID(s) {
     )
   );
 }
+
+export function withoutRoot(fn = (root, args, ctx, info) => {}) {
+  return (args, ctx, info) => fn({}, args, ctx, info);
+}

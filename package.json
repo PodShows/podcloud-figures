@@ -30,8 +30,7 @@
     "graphql-tools": "^3.0.4",
     "jsonwebtoken": "^8.2.1",
     "maxmind": "^2.7.0",
-    "pg": "^7.4.3",
-    "remove": "^0.1.5"
+    "pg": "^7.4.3"
   },
   "devDependencies": {
     "babel-plugin-import-graphql": "^2.0.0",

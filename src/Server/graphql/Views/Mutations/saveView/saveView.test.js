@@ -10,7 +10,7 @@ describe("Views", () => {
       it("with invalid authentication", async () => {
         const context = await TestContext();
 
-        const result = await saveView({}, {}, context);
+        const result = await saveView({}, context);
         expect(result).toEqual(
           expect.objectContaining({ message: "Not Authenticated!" })
         );
@@ -19,7 +19,7 @@ describe("Views", () => {
       it("with invalid FeedID", async () => {
         const context = MakeAuthenticated(await TestContext());
 
-        const result = await saveView({}, { FeedID: "invalid" }, context);
+        const result = await saveView({ FeedID: "invalid" }, context);
         expect(result).toEqual(
           expect.objectContaining({ message: "Invalid FeedID" })
         );
@@ -28,7 +28,7 @@ describe("Views", () => {
       it("with no arguments", async () => {
         const context = MakeAuthenticated(await TestContext());
 
-        const result = await saveView({}, {}, context);
+        const result = await saveView({}, context);
         expect(result).toEqual(
           expect.objectContaining({ message: "Invalid FeedID" })
         );
@@ -43,7 +43,7 @@ describe("Views", () => {
           ...data
         };
 
-        const response = await saveView({}, viewData, context);
+        const response = await saveView(viewData, context);
         const result = await new Promise((resolve, reject) => {
           context.db.query(
             `
