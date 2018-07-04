@@ -85,18 +85,48 @@ describe("AuthRequest", () => {
     });
   });
 
-  it("should authenticate with valid signature", () => {
-    const body = new Date().toString();
-    const stamp = crypto
-      .createHash("sha256")
-      .update(body)
-      .digest("hex");
+  it("should authenticate with valid token", () => {
     const auth = AuthRequest(
-      FakeRequest(
-        { authorization: `Bearer ${MakeDebugToken({ stamp })}` },
-        body
-      )
+      FakeRequest({
+        authorization: `Bearer ${MakeDebugToken({ stamp: new Date() / 1000 })}`
+      })
     );
     expect(auth).toHaveProperty("isAuthenticated", true);
+  });
+
+  it("should error with expired token", () => {
+    const spy = jest
+      .spyOn(global.console, "error")
+      .mockImplementation(() => {});
+    const auth = AuthRequest(
+      FakeRequest({
+        authorization: `Bearer ${MakeDebugToken({
+          stamp: new Date() / 1000 - 10 * 60
+        })}`
+      })
+    );
+    expect(auth).toHaveProperty("isAuthenticated", false);
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching("Token expired"));
+    spy.mockReset();
+    spy.mockRestore();
+  });
+
+  it("should error with future token", () => {
+    const spy = jest
+      .spyOn(global.console, "error")
+      .mockImplementation(() => {});
+    const auth = AuthRequest(
+      FakeRequest({
+        authorization: `Bearer ${MakeDebugToken({
+          stamp: new Date() / 1000 + 10 * 60
+        })}`
+      })
+    );
+    expect(auth).toHaveProperty("isAuthenticated", false);
+    expect(spy).toHaveBeenCalledWith(
+      expect.stringMatching("DeLorean token not supported")
+    );
+    spy.mockReset();
+    spy.mockRestore();
   });
 });

@@ -1,7 +1,13 @@
-import withAuth from "graphql-auth"
+import withAuth from "graphql-auth";
 import crypto from "crypto";
 import url from "url";
-import { isGUID, isIP, isString, isEmpty, withoutRoot } from "../../../../../utils";
+import {
+  isGUID,
+  isIP,
+  isString,
+  isEmpty,
+  withoutRoot
+} from "../../../../../utils";
 
 const sha512 = x =>
   crypto
@@ -35,7 +41,13 @@ const saveView = (
   ctx,
   infos
 ) => {
-  const { FeedID, IP = null, UserAgent = null, Referer = null, source = "feed" } = args;
+  const {
+    FeedID,
+    IP = null,
+    UserAgent = null,
+    Referer = null,
+    source = "feed"
+  } = args;
 
   return new Promise(resolve => {
     const now = +new Date();

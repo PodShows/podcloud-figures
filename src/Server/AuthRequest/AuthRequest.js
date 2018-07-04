@@ -1,12 +1,5 @@
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import config from "config";
-
-const checkRequestHash = (request, hash) =>
-  crypto
-    .createHash("sha256")
-    .update(request.body.toString(), "utf-8")
-    .digest("hex") == hash;
 
 export default function AuthRequest(request) {
   const authorization = request.get("authorization");
@@ -22,12 +15,20 @@ export default function AuthRequest(request) {
             algorithms: ["RS256"]
           });
 
-          if (checkRequestHash(request, verified.stamp)) {
-            auth.issuer = verified.iss;
-            auth.isAuthenticated = true;
-            auth.scope = null;
+          const now = new Date() / 1000;
+          const two_minutes_ago = now - 2 * 60;
+          const two_minutes_from_now = now + 2 * 60;
+
+          if (two_minutes_ago < verified.stamp) {
+            if (verified.stamp < two_minutes_from_now) {
+              auth.issuer = verified.iss;
+              auth.isAuthenticated = true;
+              auth.scope = null;
+            } else {
+              console.error("DeLorean token not supported");
+            }
           } else {
-            console.error("Request hash mismatch");
+            console.error("Token expired");
           }
         } catch (err) {
           console.error(err);
