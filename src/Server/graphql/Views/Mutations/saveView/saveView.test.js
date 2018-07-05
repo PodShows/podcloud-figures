@@ -1,15 +1,23 @@
 import saveView from "./saveView";
 import postgres from "pg";
+import { RandomFakeFeedID } from "../../../../../utils"
 import TestContext, {
   MakeAuthenticated
 } from "../../../../../Tests/TestContext.js";
 
 describe("Views", () => {
   describe("saveView", () => {
+    let context;
+    beforeAll(async () => {
+      context = await TestContext();
+    });
+
+    afterAll(async () => {
+      await context.tearDown();
+    });
+
     describe("return an error", () => {
       it("with invalid authentication", async () => {
-        const context = await TestContext();
-
         const result = await saveView({}, context);
         expect(result).toEqual(
           expect.objectContaining({ message: "Not Authenticated!" })
@@ -17,18 +25,18 @@ describe("Views", () => {
       });
 
       it("with invalid FeedID", async () => {
-        const context = MakeAuthenticated(await TestContext());
+        const ctx = MakeAuthenticated(context);
 
-        const result = await saveView({ FeedID: "invalid" }, context);
+        const result = await saveView({ FeedID: "invalid" }, ctx);
         expect(result).toEqual(
           expect.objectContaining({ message: "Invalid FeedID" })
         );
       });
 
       it("with no arguments", async () => {
-        const context = MakeAuthenticated(await TestContext());
+        const ctx = MakeAuthenticated(context);
 
-        const result = await saveView({}, context);
+        const result = await saveView({}, ctx);
         expect(result).toEqual(
           expect.objectContaining({ message: "Invalid FeedID" })
         );
@@ -37,13 +45,13 @@ describe("Views", () => {
 
     describe("save a view", () => {
       const saveTestView = async (data = {}) => {
-        const context = MakeAuthenticated(await TestContext());
+        const ctx = MakeAuthenticated(context);
         const viewData = {
-          FeedID: ("00000000-0000-0000-0000-" + +new Date()).substring(0, 36),
+          FeedID: RandomFakeFeedID() ,
           ...data
         };
 
-        const response = await saveView(viewData, context);
+        const response = await saveView(viewData, ctx);
         const result = await new Promise((resolve, reject) => {
           context.db.query(
             `

@@ -1,8 +1,6 @@
 import TestGraphQL from "../../../../Tests/TestGraphQL.js";
 import TestContext from "../../../../Tests/TestContext.js";
-
-const FakeFeedID = () =>
-  ("00000000-0000-0000-0000-" + +new Date()).substring(0, 36);
+import { RandomFakeFeedID } from "../../../../utils";
 
 const GetViewWithFeedID = async FeedID => {
   const testCtx = await TestContext();
@@ -20,6 +18,7 @@ const GetViewWithFeedID = async FeedID => {
       }
     );
   });
+  await testCtx.tearDown();
   return (result && result.rowCount && result.rows[0]) || null;
 };
 
@@ -38,7 +37,7 @@ TestGraphQL({
         );
       },
       "saves with minimal arguments": async ({ testQL }) => {
-        const feed_id = FakeFeedID();
+        const feed_id = RandomFakeFeedID();
         const response = await testQL(
           `mutation { views { saveView(FeedID: "${feed_id}") } }`,
           {

@@ -42,6 +42,10 @@ const TestGraphQL = (tests = {}) => {
       };
     });
 
+    afterAll(async () => {
+      await testCtx.tearDown();
+    });
+
     const runSubtests = (tests => {
       Object.keys(tests).forEach(key => {
         const subtest = tests[key];

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import config from "config";
+import crypto from "crypto";
 export { isIP } from "net";
 
 export function isString(s) {
@@ -24,3 +25,7 @@ export function isGUID(s) {
 export function withoutRoot(fn = (root, args, ctx, info) => {}) {
   return (args, ctx, info) => fn({}, args, ctx, info);
 }
+
+export const RandomFakeFeedID = () => {
+  return ("00000000-0000-0000-0000-" + crypto.createHash('sha256').update(""+Math.floor(+new Date()*Math.random())).digest('hex')).substring(0, 36);
+};

@@ -1,8 +1,8 @@
 import postgres from "pg";
-import maxmind from "maxmind";
 import path from "path";
 import config from "config";
 import AuthRequest from "../Server/AuthRequest";
+import maxmind from "../Maxmind.js";
 
 let context;
 
@@ -14,10 +14,20 @@ const TestContext = async () => {
 
     context = {
       db,
-      maxmind: maxmind.openSync(
-        path.resolve(__dirname + "/../../geoip/GeoLite2-City.mmdb")
-      ),
+      maxmind,
       auth: AuthRequest({ get: () => {} })
+    };
+
+    context.tearDown = async () => {
+      try {
+       await db.end();
+      } catch(e) {
+        if(
+          !/ended by the other party$/.test(e.message)
+        ) {
+          throw e;
+        }
+      }
     };
   }
 
