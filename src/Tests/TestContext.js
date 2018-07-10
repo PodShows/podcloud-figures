@@ -20,11 +20,9 @@ const TestContext = async () => {
 
     context.tearDown = async () => {
       try {
-       await db.end();
-      } catch(e) {
-        if(
-          !/ended by the other party$/.test(e.message)
-        ) {
+        await db.end();
+      } catch (e) {
+        if (!/ended by the other party$/.test(e.message)) {
           throw e;
         }
       }

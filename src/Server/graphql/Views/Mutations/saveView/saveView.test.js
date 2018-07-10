@@ -1,6 +1,6 @@
 import saveView from "./saveView";
 import postgres from "pg";
-import { RandomFakeFeedID } from "../../../../../utils"
+import { RandomFakeFeedID } from "../../../../../utils";
 import TestContext, {
   MakeAuthenticated
 } from "../../../../../Tests/TestContext.js";
@@ -47,7 +47,7 @@ describe("Views", () => {
       const saveTestView = async (data = {}) => {
         const ctx = MakeAuthenticated(context);
         const viewData = {
-          FeedID: RandomFakeFeedID() ,
+          FeedID: RandomFakeFeedID(),
           ...data
         };
 
