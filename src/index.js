@@ -9,39 +9,31 @@ const App = () => {
   const app = {};
 
   app.run = (trying = 0) => {
-    const db = new postgres.Client(
+    const db = new postgres.Pool(
       (config.has("postgres") && config.get("postgres")) || undefined
     );
 
-    db.connect()
-      .then(
-        () => {
-          const server = new Server({ context: { db, maxmind } });
-          const port = (config.has("port") && config.get("port")) || 5000;
-          return server
-            .start({ port })
-            .then(() =>
-              console.log(`Server is running on http://localhost:${port}`)
-            );
-        },
-        err => {
-          // 1 second minimum, 12 seconds maximum
-          const retry_sec = Math.max(1, Math.min(12, trying + trying));
-          console.error(`\n${err}\nRetrying in ${retry_sec} seconds...`);
-          setTimeout(app.run, retry_sec * 1000, retry_sec);
+    app.workers = 0;
+    app.max_workers = 5;
+    app.context = { db, maxmind };
+    app.cron = new CronJob({
+      cronTime: "* * * * * *",
+      onTick: async () => {
+        if (app.workers < app.max_workers) {
+          const worker_id = ++app.workers;
+          await Heartbeat(app.context);
+          app.workers--;
         }
-      )
-      .then(() => {
-        return db.end();
-      });
+      },
+      start: true,
+      timeZone: "UTC"
+    });
+    app.server = new Server({ context: app.context });
+    const port = (config.has("port") && config.get("port")) || 5000;
+    return app.server
+      .start({ port })
+      .then(() => console.log(`Server is running on http://localhost:${port}`));
   };
-
-  app.cron = new CronJob({
-    cronTime: "30 * * * * *",
-    onTick: Heartbeat,
-    start: true,
-    timeZone: "UTC"
-  });
 
   return app.run();
 };

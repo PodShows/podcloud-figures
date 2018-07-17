@@ -1,5 +1,9 @@
-async function ComputeViewCount() {
-  console.log("Hello");
-}
+import ComputeDailyViewCounts from "./ComputeDailyViewCounts";
+// import ComputeMonthlyViewCounts from "./ComputeMonthlyViewCounts";
+
+const ComputeViewCount = async db => {
+  await ComputeDailyViewCounts(db);
+  // await ComputeMonthlyViewCounts(db);
+};
 
 export default ComputeViewCount;

@@ -51,14 +51,13 @@ const saveView = (
 
   return new Promise(resolve => {
     const now = +new Date();
-    const today = new Date(+now);
-    today.setUTCHours(0);
-    today.setUTCMinutes(0);
-    today.setUTCSeconds(0);
-    today.setUTCMilliseconds(0);
+    let today = new Date(+now);
+    today.setUTCHours(0, 0, 0, 0);
+    today = +today / 1000;
 
-    const thismonth = new Date(+today);
+    let thismonth = new Date(today);
     thismonth.setUTCDate(0);
+    thismonth = +thismonth / 1000;
 
     if (!isGUID(FeedID)) {
       return resolve(new Error("Invalid FeedID"));
@@ -87,6 +86,8 @@ const saveView = (
           (lookup.country && lookup.country.iso_code))) ||
       null;
 
+    const scrambledIP = sha512(parsedIP);
+
     const city =
       (lookup &&
         lookup.city &&
@@ -94,8 +95,12 @@ const saveView = (
         JSON.stringify(lookup.city.names)) ||
       null;
 
-    ctx.db.query(
-      `
+    ctx.db.connect((err, client, release) => {
+      if (err) {
+        return resolve(new Error(err));
+      }
+      client.query(
+        `
         INSERT INTO views (
               source,
               feed_id,
@@ -118,27 +123,26 @@ const saveView = (
               $10,$11,$12,
               current_timestamp,
               current_timestamp);`,
-      [
-        parsedSource,
-        FeedID,
-        sha512(parsedIP),
-        parsedUserAgent,
-        city,
-        country,
-        parsedReferer,
-        parsedRefererHost,
-        +today,
-        `${+today}_${parsedIP}`,
-        +thismonth,
-        `${+thismonth}_${parsedIP}`
-      ],
-      (err, results) => {
-        if (err) {
-          return resolve(new Error(err));
+        [
+          parsedSource,
+          FeedID,
+          scrambledIP,
+          parsedUserAgent,
+          city,
+          country,
+          parsedReferer,
+          parsedRefererHost,
+          today,
+          `${today}_${scrambledIP}`,
+          thismonth,
+          `${thismonth}_${scrambledIP}`
+        ],
+        (err, results) => {
+          release();
+          return resolve(err ? new Error(err) : true);
         }
-        resolve(true);
-      }
-    );
+      );
+    });
   });
 };
 

@@ -15,27 +15,23 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable("views", {
+  return db.createTable("view_counts", {
     id: { type: "serial", primaryKey: true },
     source: { type: "text" },
     feed_id: { type: "uuid" },
-    ip: { type: "text" },
-    user_agent: { type: "text" },
-    city: { type: "json" },
-    country: { type: "text" },
-    referer: { type: "text" },
-    referer_host: { type: "text" },
-    daily_timecode: { type: "bigint" },
-    daily_timecode_with_ip: { type: "text" },
-    monthly_timecode: { type: "bigint" },
-    monthly_timecode_with_ip: { type: "text" },
+    sorting: { type: "text" },
+    timecode: { type: "bigint" },
+    bots: { type: "bigint" },
+    unique_bots: { type: "bigint" },
+    humans: { type: "bigint" },
+    unique_humans: { type: "bigint" },
     created_at: { type: "timestamp" },
     updated_at: { type: "timestamp" }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable("views");
+  return db.dropTable("view_counts");
 };
 
 exports._meta = {
