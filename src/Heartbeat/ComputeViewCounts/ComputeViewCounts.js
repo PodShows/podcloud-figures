@@ -1,9 +1,8 @@
-import ComputeDailyViewCounts from "./ComputeDailyViewCounts";
-// import ComputeMonthlyViewCounts from "./ComputeMonthlyViewCounts";
+import pickAndComputeForSorting from "./pickAndComputeForSorting";
 
 const ComputeViewCount = async db => {
-  await ComputeDailyViewCounts(db);
-  // await ComputeMonthlyViewCounts(db);
+  pickAndComputeForSorting("daily");
+  pickAndComputeForSorting("monthly");
 };
 
 export default ComputeViewCount;
