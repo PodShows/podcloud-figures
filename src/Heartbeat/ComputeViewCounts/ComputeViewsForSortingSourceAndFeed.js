@@ -1,4 +1,6 @@
-const computeViewsForSortingSourceAndFeed = async (
+import CheckAndParseSorting from "./CheckAndParseSorting";
+
+const ComputeViewsForSortingSourceAndFeed = async (
   db,
   sorting,
   source,
@@ -6,13 +8,7 @@ const computeViewsForSortingSourceAndFeed = async (
   start_date,
   end_date
 ) => {
-  if (/^daily|monthly$/i.test(sorting)) {
-    const sortingly = sorting.toLowerCase();
-    const unitOfTime = sorting === "daily" ? "day" : "month";
-  } else {
-    throw new TypeError("sorting should be daily or monthly");
-  }
-
+  const { sortingly, unitOfTime } = CheckAndParseSorting(sorting);
   const client = await db.connect();
 
   try {
@@ -56,4 +52,4 @@ const computeViewsForSortingSourceAndFeed = async (
   }
 };
 
-export default computeViewsForSortingSourceAndFeed;
+export default ComputeViewsForSortingSourceAndFeed;

@@ -1,15 +1,12 @@
 import moment from "moment";
 import momentTz from "moment-timezone";
 
-// 1396310399 is 1 second before the day of podCloud first public release
-const pickFeedToComputeForSorting = async (db, sorting) => {
-  if (/^daily|monthly$/i.test(sorting)) {
-    const sortingly = sorting.toLowerCase();
-    const unitOfTime = sorting === "daily" ? "day" : "month";
-  } else {
-    throw new TypeError("sorting should be daily or monthly");
-  }
+import CheckAndParseSorting from "./CheckAndParseSorting";
 
+const PickFeedToComputeForSorting = async (db, sorting) => {
+  const { sortingly, unitOfTime } = CheckAndParseSorting(sorting);
+
+  // 1396310399 is 1 second before the day of podCloud first public release
   let query = `
       SELECT * 
         FROM (
@@ -55,4 +52,4 @@ const pickFeedToComputeForSorting = async (db, sorting) => {
   return {};
 };
 
-export default pickFeedToComputeForSorting;
+export default PickFeedToComputeForSorting;
