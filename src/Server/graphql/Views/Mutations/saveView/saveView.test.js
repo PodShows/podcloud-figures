@@ -53,19 +53,25 @@ describe("Views", () => {
 
         const response = await saveView(viewData, ctx);
         const result = await new Promise((resolve, reject) => {
-          context.db.query(
-            `
-            SELECT * FROM views WHERE feed_id = $1
-            `,
-            [viewData.FeedID],
-            (err, results) => {
-              if (err) {
-                return reject(err);
-              }
-              resolve(results);
+          context.db.connect((err, client, release) => {
+            if (err) {
+              return reject(err);
             }
-          );
+
+            client.query(
+              `SELECT * FROM views WHERE feed_id = $1`,
+              [viewData.FeedID],
+              (err, results) => {
+                release();
+                if (err) {
+                  return reject(err);
+                }
+                resolve(results);
+              }
+            );
+          });
         });
+
         const insert = (result && result.rowCount && result.rows[0]) || null;
 
         return {

@@ -8,9 +8,7 @@ let context;
 
 const TestContext = async () => {
   if (!context) {
-    const db = new postgres.Client(config.get("postgres"));
-
-    await db.connect();
+    const db = new postgres.Pool(config.get("postgres"));
 
     context = {
       db,
