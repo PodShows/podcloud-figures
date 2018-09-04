@@ -36,6 +36,9 @@
     "pg": "^7.4.3",
     "pg-format": "^1.0.4"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "devDependencies": {
     "babel-plugin-import-graphql": "^2.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
