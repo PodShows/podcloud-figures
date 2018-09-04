@@ -6,7 +6,7 @@
 - [x] Mutation to save view
 - [x] Support all view sources
 - [ ] Support bot detection
-- [ ] Executable task to calculate view counts daily and monthly
+- [x] Executable task to calculate view counts daily and monthly
 - [ ] Calculate referer counts
 - [ ] Archive old views into CSV monthly
 - [ ] Query to get view counts
