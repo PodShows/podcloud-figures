@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import config from "config";
 import crypto from "crypto";
+import isBot from "./isBot";
 export { isIP } from "net";
+
+export { isBot };
 
 export function isString(s) {
   return typeof s === "string";

@@ -1,6 +1,6 @@
 import TestGraphQL from "../../../../Tests/TestGraphQL.js";
 import TestContext from "../../../../Tests/TestContext.js";
-import { RandomFakeFeedID } from "../../../../utils";
+import { RandomFakeFeedID } from "../../../../Utils";
 
 const GetViewWithFeedID = async FeedID => {
   const testCtx = await TestContext();

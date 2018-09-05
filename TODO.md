@@ -5,7 +5,7 @@
 - [x] Authentication system
 - [x] Mutation to save view
 - [x] Support all view sources
-- [ ] Support bot detection
+- [x] Support bot detection
 - [x] Executable task to calculate view counts daily and monthly
 - [ ] Calculate referer counts
 - [ ] Archive old views into CSV monthly

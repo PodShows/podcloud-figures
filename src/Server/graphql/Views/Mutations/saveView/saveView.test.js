@@ -1,6 +1,6 @@
 import saveView from "./saveView";
 import postgres from "pg";
-import { RandomFakeFeedID } from "../../../../../utils";
+import { RandomFakeFeedID } from "../../../../../Utils";
 import TestContext, {
   MakeAuthenticated
 } from "../../../../../Tests/TestContext.js";
@@ -96,6 +96,20 @@ describe("Views", () => {
 
         expect(test.insert).toHaveProperty("country", "FR");
         expect(test.insert.city).toHaveProperty("fr", "Paris");
+      });
+
+      test("detect bots", async () => {
+        const test = await saveTestView({
+          UserAgent: "Googlebot/1.0"
+        });
+
+        expect(test.insert).toHaveProperty("is_bot", true);
+
+        const testNotBot = await saveTestView({
+          UserAgent: "Mozilla"
+        });
+
+        expect(testNotBot.insert).toHaveProperty("is_bot", false);
       });
 
       test("scramble IP into database", async () => {

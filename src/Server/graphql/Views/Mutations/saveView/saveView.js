@@ -6,8 +6,9 @@ import {
   isIP,
   isString,
   isEmpty,
+  isBot,
   withoutRoot
-} from "../../../../../utils";
+} from "../../../../../Utils";
 
 const sha512 = x =>
   crypto
@@ -110,6 +111,7 @@ const saveView = (
               country,
               referer,
               referer_host,
+              is_bot,
               daily_timecode,
               daily_timecode_with_ip,
               monthly_timecode,
@@ -120,7 +122,8 @@ const saveView = (
               $1,$2,$3,
               $4,$5,$6,
               $7,$8,$9,
-              $10,$11,$12,
+              $10,$11,
+              $12,$13,
               current_timestamp,
               current_timestamp);`,
         [
@@ -132,6 +135,7 @@ const saveView = (
           country,
           parsedReferer,
           parsedRefererHost,
+          isBot(parsedUserAgent),
           today,
           `${today}_${scrambledIP}`,
           thismonth,
