@@ -17,7 +17,8 @@ const ComputeViewCount = async (db, sorting) => {
     const start_date = moment
       .unix(last_timecode)
       .tz("utc")
-      .add(1, unitOfTime)
+      .endOf(unitOfTime)
+      .add(1, "day")
       .startOf(unitOfTime)
       .unix();
 
