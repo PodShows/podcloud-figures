@@ -57,7 +57,7 @@ const saveView = (
     today = +today / 1000;
 
     let thismonth = new Date(today * 1000);
-    thismonth.setUTCDate(0);
+    thismonth.setUTCDate(1);
     thismonth = +thismonth / 1000;
 
     if (!isGUID(FeedID)) {
