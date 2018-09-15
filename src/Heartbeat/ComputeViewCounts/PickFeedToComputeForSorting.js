@@ -3,6 +3,8 @@ import momentTz from "moment-timezone";
 
 import CheckAndParseSorting from "./CheckAndParseSorting";
 
+const DEFAULT_TIMESTAMP = 1530403199; // 1396310399;
+
 const PickFeedToComputeForSorting = async (db, sorting) => {
   const { sortingly, unitOfTime } = CheckAndParseSorting(sorting);
 
@@ -11,7 +13,7 @@ const PickFeedToComputeForSorting = async (db, sorting) => {
       SELECT * 
         FROM (
                   (SELECT views.feed_id, 
-                                COALESCE(MAX(view_counts.timecode), 1396310399) as timecode 
+                                COALESCE(MAX(view_counts.timecode), ${DEFAULT_TIMESTAMP}) as timecode 
                              FROM views 
                              LEFT JOIN view_counts 
                              ON views.feed_id = view_counts.feed_id AND view_counts.sorting = $1

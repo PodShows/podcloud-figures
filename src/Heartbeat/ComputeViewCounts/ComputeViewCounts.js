@@ -13,6 +13,8 @@ const ComputeViewCount = async (db, sorting) => {
     timecode: last_timecode
   } = await PickFeedToComputeForSorting(db, sortingly);
 
+  console.debug(`Computing ${sortingly} view count for feed ${feed_id}.`);
+
   if (feed_id) {
     const start_date = moment
       .unix(last_timecode)
@@ -33,6 +35,7 @@ const ComputeViewCount = async (db, sorting) => {
     for (let i = 0; i < sources.length; i++) {
       await ComputeViewsForSortingSourceAndFeed(
         db,
+        sortingly,
         sources[i],
         feed_id,
         start_date,

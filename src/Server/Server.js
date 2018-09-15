@@ -18,6 +18,8 @@ export default class Server {
       this.app.get("/graphiql", graphiqlExpress({ endpointURL: "/" })); // if you want GraphiQL enabled
     }
 
+    this.app.use("/archives", express.static(config.csvDir));
+
     this.app.use(
       "/",
       graphqlExpress(req => {

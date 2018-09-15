@@ -20,5 +20,6 @@ fs.readdirSync(_issuers_key_folder).forEach(file => {
 });
 
 module.exports = {
-  IssuersKeys
+  IssuersKeys,
+  csvDir: path.resolve(__dirname, "../archives/")
 };
