@@ -14,8 +14,7 @@ export function isString(s) {
 
 export function isEmpty(s) {
   return (
-    !s ||
-    ((isString(s) && s.trim().length < 1) || (Array.isArray(s) && s.length < 1))
+    (isString(s) && s.trim().length < 1) || (Array.isArray(s) && s.length < 1)
   );
 }
 
@@ -33,10 +32,15 @@ export function withoutRoot(fn = (root, args, ctx, info) => {}) {
 }
 
 export const archiveUrl = file => {
-  return path.join(
-    "/archives",
-    ...path.basename(file, path.extname(file)).match(/.{1,2}/g),
-    file
+  return (
+    (isString(file) &&
+      !isEmpty(file) &&
+      path.join(
+        "/archives",
+        ...path.basename(file, path.extname(file)).match(/.{1,2}/g),
+        file
+      )) ||
+    null
   );
 };
 

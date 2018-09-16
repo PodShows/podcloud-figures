@@ -6,7 +6,7 @@ describe("Views", () => {
   describe("archive", () => {
     const FeedID = "00000000-0000-0000-0000-abb3fd72c1b8";
     const Timecode = 1535673600;
-    const file = "6a20d919ef6203f8c0cc75d194674605a4b768f0.zip";
+    const filename = "6a20d919ef6203f8c0cc75d194674605a4b768f0.zip";
 
     const context = {
       auth: {},
@@ -23,7 +23,8 @@ describe("Views", () => {
             {
               feed_id: FeedID,
               timecode: Timecode,
-              file
+              updated_at: new Date(Timecode * 1000),
+              filename
             }
           ]
         })
@@ -59,7 +60,13 @@ describe("Views", () => {
     test("resolves url", async () => {
       expect(
         await archive({ FeedID, Timecode }, MakeAuthenticated(context))
-      ).toBe(archiveUrl(file));
+      ).toEqual(
+        expect.objectContaining({
+          date: new Date(Timecode * 1000),
+          timecode: Timecode,
+          url: archiveUrl(filename)
+        })
+      );
 
       expect(context.db.query).toHaveBeenCalledWith(
         expect.any(String),

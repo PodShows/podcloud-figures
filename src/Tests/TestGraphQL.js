@@ -31,7 +31,7 @@ const TestGraphQL = (tests = {}) => {
       testCtx = await TestContext();
       delete testCtx.auth;
       db = testCtx.db;
-      srv = new Server({ ctx: testCtx });
+      srv = new Server({ context: testCtx });
       await srv.start({ port });
       testQL = (query, { authorize = false } = {}) => {
         const graphtester = tester({

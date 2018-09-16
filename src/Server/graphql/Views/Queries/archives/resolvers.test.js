@@ -25,13 +25,13 @@ describe("Views", () => {
             {
               feed_id: FeedID,
               timecode: TimecodeAug,
-              file: FileAug,
+              filename: FileAug,
               created_at: new Date(2018, 8, 1)
             },
             {
               feed_id: FeedID,
               timecode: TimecodeJul,
-              file: FileJul,
+              filename: FileJul,
               created_at: new Date(2018, 7, 1)
             }
           ]
