@@ -8,10 +8,9 @@ const DeleteOldViews = async db => {
                   v.feed_id,
                   v.monthly_timecode
       FROM            PUBLIC.views v
-      INNER JOIN      PUBLIC.view_counts vc
-      ON              v.feed_id = vc.feed_id
-      AND             v.monthly_timecode = vc.timecode
-      AND             vc.sorting = 'monthly'
+      INNER JOIN      PUBLIC.views_archives va
+      ON              v.feed_id = va.feed_id
+      AND             v.monthly_timecode = va.timecode
       WHERE           v.monthly_timecode <= extract('epoch' FROM date_trunc('month', now()) - interval '2' month)::bigint
     ) AS dataTable
     ORDER BY RANDOM()
