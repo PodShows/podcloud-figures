@@ -1,7 +1,7 @@
 import moment from "moment";
 import momentTz from "moment-timezone";
 
-import CheckAndParseSorting from "./CheckAndParseSorting";
+import { CheckAndParseSorting } from "../../Utils";
 
 const DEFAULT_TIMESTAMP = 1530403199; // 1396310399;
 

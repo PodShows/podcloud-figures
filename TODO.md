@@ -8,7 +8,7 @@
 - [x] Support bot detection
 - [x] Executable task to calculate view counts daily and monthly
 - [x] Archive old views into CSV monthly
-- [ ] Query to get view counts
+- [x] Query to get view counts
 - [x] Query to get archives urls
 - [x] Handler to get archives CSV file
 - [ ] Script to import old view counts 

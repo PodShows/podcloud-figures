@@ -1,7 +1,7 @@
 import moment from "moment";
 import momentTz from "moment-timezone";
 
-import CheckAndParseSorting from "./CheckAndParseSorting";
+import { CheckAndParseSorting } from "../../Utils";
 import PickFeedToComputeForSorting from "./PickFeedToComputeForSorting";
 import ComputeViewsForSortingSourceAndFeed from "./ComputeViewsForSortingSourceAndFeed";
 

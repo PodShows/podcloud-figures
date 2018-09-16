@@ -1,4 +1,4 @@
-import CheckAndParseSorting from "./CheckAndParseSorting";
+import { CheckAndParseSorting } from "../../Utils";
 
 const ComputeViewsForSortingSourceAndFeed = async (
   db,
@@ -30,9 +30,20 @@ const ComputeViewsForSortingSourceAndFeed = async (
       await db.query(
         `
           INSERT INTO view_counts
-            (feed_id, source, sorting, timecode, bots, unique_bots, humans, unique_humans)
+            (
+            feed_id, 
+            source, 
+            sorting, 
+            timecode, 
+            bots, 
+            unique_bots, 
+            humans, 
+            unique_humans,
+            created_at,
+            updated_at
+            )
           VALUES
-            ($1, $2, $3, $4, $5, $6, $7, $8);
+            ($1, $2, $3, $4, $5, $6, $7, $8, current_timestamp, current_timestamp);
         `,
         [
           feed_id,

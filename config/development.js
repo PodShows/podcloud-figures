@@ -1,3 +1,5 @@
+import process from "process";
+
 module.exports = {
   postgres: {
     user: "postgres",

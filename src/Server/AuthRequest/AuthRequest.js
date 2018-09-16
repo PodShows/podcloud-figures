@@ -2,8 +2,18 @@ import jwt from "jsonwebtoken";
 import config from "config";
 
 export default function AuthRequest(request) {
-  const authorization = request.get("authorization");
   const auth = { isAuthenticated: false, scope: null, user: null };
+
+  if (config.noAuth === true) {
+    auth.issuer = "config";
+    auth.isAuthenticated = true;
+    auth.scope = null;
+
+    request.auth = auth;
+    return auth;
+  }
+
+  const authorization = request.get("authorization");
   if (authorization && authorization.startsWith("Bearer")) {
     const payload = authorization.replace(/Bearer\s+/, "");
     const decoded = jwt.decode(payload);

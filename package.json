@@ -28,6 +28,7 @@
     "express": "^4.16.3",
     "graphql": "^0.13.2",
     "graphql-auth": "^0.2.2",
+    "graphql-date": "^1.0.3",
     "graphql-tag": "^2.9.1",
     "graphql-tester": "^0.0.5",
     "graphql-tools": "^3.0.4",
@@ -41,7 +42,14 @@
     "pg-format": "^1.0.4"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/config/"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/config/"
+    ]
   },
   "devDependencies": {
     "babel-plugin-import-graphql": "^2.0.0",

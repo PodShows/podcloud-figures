@@ -20,7 +20,11 @@ const archive = (root, args = { FeedID, Timecode }, ctx, infos) => {
     .then(results => {
       if (results.rowCount < 1) return null;
 
-      return archiveUrl(results.rows[0].file);
+      return {
+        date: results.rows[0].updated_at,
+        timecode: results.rows[0].timecode,
+        url: archiveUrl(results.rows[0].filename)
+      };
     });
 };
 

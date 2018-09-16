@@ -21,5 +21,6 @@ fs.readdirSync(_issuers_key_folder).forEach(file => {
 
 module.exports = {
   IssuersKeys,
-  csvDir: path.resolve(__dirname, "../archives/")
+  csvDir: path.resolve(__dirname, "../archives/"),
+  noAuth: !!process.env.NO_AUTH
 };

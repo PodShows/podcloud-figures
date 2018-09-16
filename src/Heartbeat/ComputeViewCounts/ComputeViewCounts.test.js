@@ -29,6 +29,7 @@ describe("ComputeViewCount", () => {
     expect(ComputeViewsForSortingSourceAndFeed).toHaveBeenNthCalledWith(
       1,
       null,
+      "daily",
       "feed",
       feed_id,
       beginning_of_day,
@@ -38,6 +39,7 @@ describe("ComputeViewCount", () => {
     expect(ComputeViewsForSortingSourceAndFeed).toHaveBeenNthCalledWith(
       2,
       null,
+      "daily",
       "site",
       feed_id,
       beginning_of_day,
@@ -66,6 +68,7 @@ describe("ComputeViewCount", () => {
     expect(ComputeViewsForSortingSourceAndFeed).toHaveBeenNthCalledWith(
       1,
       null,
+      "monthly",
       "feed",
       feed_id,
       beginning_of_month,
@@ -75,6 +78,7 @@ describe("ComputeViewCount", () => {
     expect(ComputeViewsForSortingSourceAndFeed).toHaveBeenNthCalledWith(
       2,
       null,
+      "monthly",
       "site",
       feed_id,
       beginning_of_month,

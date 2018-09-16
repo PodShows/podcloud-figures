@@ -3,9 +3,10 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import crypto from "crypto";
 import isBot from "./isBot";
-export { isIP } from "net";
+import CheckAndParseSorting from "./CheckAndParseSorting";
 
-export { isBot };
+export { isIP } from "net";
+export { isBot, CheckAndParseSorting };
 
 export function isString(s) {
   return typeof s === "string";
@@ -13,7 +14,8 @@ export function isString(s) {
 
 export function isEmpty(s) {
   return (
-    (isString(s) && s.trim().length < 1) || (Array.isArray(s) && s.length < 1)
+    !s ||
+    ((isString(s) && s.trim().length < 1) || (Array.isArray(s) && s.length < 1))
   );
 }
 
@@ -30,12 +32,14 @@ export function withoutRoot(fn = (root, args, ctx, info) => {}) {
   return (args, ctx, info) => fn({}, args, ctx, info);
 }
 
-export const archiveUrl = file =>
-  path.join(
+export const archiveUrl = file => {
+  console.log(file);
+  return path.join(
     "/archives",
     ...path.basename(file, path.extname(file)).match(/.{1,2}/g),
     file
   );
+};
 
 export const RandomFakeFeedID = () => {
   return (

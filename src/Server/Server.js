@@ -26,7 +26,7 @@ export default class Server {
         const context = {
           ...req,
           auth: AuthRequest(req),
-          ...options.ctx
+          ...options.context
         };
 
         return {
