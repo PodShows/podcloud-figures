@@ -1,5 +1,7 @@
-import hello from "./hello/resolvers";
+import archives from "./archives/resolvers";
+import archive from "./archive/resolvers";
 
 export default {
-  ...hello
+  ...archives,
+  ...archive
 };

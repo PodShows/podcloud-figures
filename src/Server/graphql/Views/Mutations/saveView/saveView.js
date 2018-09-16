@@ -38,7 +38,7 @@ const validRefererOrDefault = (referer, defaultValue = null) => {
 
 const saveView = (
   root,
-  args = { IP: null, UserAgent: null, Referer: null, source: "feed" },
+  args = { IP: null, UserAgent: null, Referer: null, Source: "feed" },
   ctx,
   infos
 ) => {
@@ -47,7 +47,7 @@ const saveView = (
     IP = null,
     UserAgent = null,
     Referer = null,
-    source = "feed"
+    Source = "feed"
   } = args;
 
   return new Promise(resolve => {
@@ -65,10 +65,10 @@ const saveView = (
     }
 
     const parsedSource =
-      isString(source) &&
-      !isEmpty(source) &&
-      /^(feed|site)$/i.test(source.trim())
-        ? source.trim().toLowerCase()
+      isString(Source) &&
+      !isEmpty(Source) &&
+      /^(feed|site)$/i.test(Source.trim())
+        ? Source.trim().toLowerCase()
         : "feed";
 
     const parsedIP = validIPOrDefault(IP);

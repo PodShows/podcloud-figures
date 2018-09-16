@@ -1,3 +1,4 @@
+import path from "path";
 import jwt from "jsonwebtoken";
 import config from "config";
 import crypto from "crypto";
@@ -28,6 +29,13 @@ export function isGUID(s) {
 export function withoutRoot(fn = (root, args, ctx, info) => {}) {
   return (args, ctx, info) => fn({}, args, ctx, info);
 }
+
+export const archiveUrl = file =>
+  path.join(
+    "/archives",
+    ...path.basename(file, path.extname(file)).match(/.{1,2}/g),
+    file
+  );
 
 export const RandomFakeFeedID = () => {
   return (

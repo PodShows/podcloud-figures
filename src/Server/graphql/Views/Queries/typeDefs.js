@@ -1,7 +1,8 @@
 export default [
   `
     type ViewQueries {
-      hello: String
+      archives(FeedID: String!): [String]
+      archive(FeedID: String!, Timecode: Int!): String
     }
   `
 ];
