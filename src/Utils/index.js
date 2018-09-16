@@ -33,7 +33,6 @@ export function withoutRoot(fn = (root, args, ctx, info) => {}) {
 }
 
 export const archiveUrl = file => {
-  console.log(file);
   return path.join(
     "/archives",
     ...path.basename(file, path.extname(file)).match(/.{1,2}/g),

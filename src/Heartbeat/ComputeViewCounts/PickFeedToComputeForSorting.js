@@ -3,12 +3,12 @@ import momentTz from "moment-timezone";
 
 import { CheckAndParseSorting } from "../../Utils";
 
-const DEFAULT_TIMESTAMP = 1530403199; // 1396310399;
+// 1396310399 is 1 second before the day of podCloud first public release
+const DEFAULT_TIMESTAMP = 1396310399;
 
 const PickFeedToComputeForSorting = async (db, sorting) => {
   const { sortingly, unitOfTime } = CheckAndParseSorting(sorting);
 
-  // 1396310399 is 1 second before the day of podCloud first public release
   let query = `
       SELECT * 
         FROM (

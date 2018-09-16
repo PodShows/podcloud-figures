@@ -18,7 +18,6 @@ const archives = (root, args = { FeedID }, ctx, infos) => {
       [FeedID]
     )
     .then(results => {
-      console.log(results);
       return results.rows.map(row => ({
         date: row.created_at,
         timecode: row.timecode,
