@@ -44,6 +44,7 @@ const saveView = (
 ) => {
   const {
     FeedID,
+    FeedName = null,
     IP = null,
     UserAgent = null,
     Referer = null,
@@ -63,6 +64,9 @@ const saveView = (
     if (!isGUID(FeedID)) {
       return resolve(new Error("Invalid FeedID"));
     }
+
+    const parsedFeedName =
+      isString(FeedName) && !isEmpty(FeedName) ? FeedName : null;
 
     const parsedSource =
       isString(Source) &&
@@ -100,9 +104,34 @@ const saveView = (
       if (err) {
         return resolve(new Error(err));
       }
-      client.query(
-        `
-        INSERT INTO views (
+
+      new Promise((res, rej) => {
+        // We do not have data, let's skip that
+        if (!parsedFeedName) return res();
+
+        client.query(
+          `
+            INSERT INTO display_names (
+                feed_id, 
+                display_name
+              ) VALUES (
+                $1, 
+                $2
+              )
+            ON CONFLICT (feed_id)
+            DO UPDATE SET display_name = $2;
+            `,
+          [FeedID, parsedFeedName],
+          (err, results) => {
+            err && console.error(err); // basically ignore it
+            return res();
+          }
+        );
+      }).then(
+        () => {
+          client.query(
+            `
+            INSERT INTO views (
               source,
               feed_id,
               ip,
@@ -126,25 +155,28 @@ const saveView = (
               $12,$13,
               current_timestamp,
               current_timestamp);`,
-        [
-          parsedSource,
-          FeedID,
-          scrambledIP,
-          parsedUserAgent,
-          city,
-          country,
-          parsedReferer,
-          parsedRefererHost,
-          isBot(parsedUserAgent),
-          today,
-          `${today}_${scrambledIP}`,
-          thismonth,
-          `${thismonth}_${scrambledIP}`
-        ],
-        (err, results) => {
-          release();
-          return resolve(err ? new Error(err) : true);
-        }
+            [
+              parsedSource,
+              FeedID,
+              scrambledIP,
+              parsedUserAgent,
+              city,
+              country,
+              parsedReferer,
+              parsedRefererHost,
+              isBot(parsedUserAgent),
+              today,
+              `${today}_${scrambledIP}`,
+              thismonth,
+              `${thismonth}_${scrambledIP}`
+            ],
+            (err, results) => {
+              release();
+              return resolve(err ? new Error(err) : true);
+            }
+          );
+        },
+        err => resolve(err)
       );
     });
   });

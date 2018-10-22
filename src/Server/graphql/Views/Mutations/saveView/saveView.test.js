@@ -71,13 +71,35 @@ describe("Views", () => {
             );
           });
         });
+        const displayres = await new Promise((resolve, reject) => {
+          context.db.connect((err, client, release) => {
+            if (err) {
+              return reject(err);
+            }
+
+            client.query(
+              `SELECT * FROM display_names WHERE feed_id = $1`,
+              [viewData.FeedID],
+              (err, results) => {
+                release();
+                if (err) {
+                  return reject(err);
+                }
+                resolve(results);
+              }
+            );
+          });
+        });
 
         const insert = (result && result.rowCount && result.rows[0]) || null;
+        const display_name =
+          (displayres && displayres.rowCount && displayres.rows[0]) || null;
 
         return {
           response,
           result,
           insert,
+          display_name,
           viewData
         };
       };
@@ -87,6 +109,84 @@ describe("Views", () => {
         expect(test.response).toBe(true);
         expect(test.result).toHaveProperty("rowCount", 1);
         expect(test.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+      });
+
+      test("saves feeds display name", async () => {
+        const test = await saveTestView({ FeedName: "Toto123" });
+        expect(test.response).toBe(true);
+        expect(test.result).toHaveProperty("rowCount", 1);
+        expect(test.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+        expect(test.display_name).toHaveProperty(
+          "display_name",
+          test.viewData.FeedName
+        );
+        expect(test.display_name).toHaveProperty(
+          "feed_id",
+          test.viewData.FeedID
+        );
+      });
+
+      test("update display name if feeds already exists", async () => {
+        const test = await saveTestView({ FeedName: "Toto123" });
+        expect(test.response).toBe(true);
+        expect(test.result).toHaveProperty("rowCount", 1);
+        expect(test.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+        expect(test.display_name).toHaveProperty(
+          "display_name",
+          test.viewData.FeedName
+        );
+        expect(test.display_name).toHaveProperty(
+          "feed_id",
+          test.viewData.FeedID
+        );
+
+        const test2 = await saveTestView({
+          FeedID: test.viewData.FeedID,
+          FeedName: "Toto456"
+        });
+        expect(test2.response).toBe(true);
+        expect(test2.result).toHaveProperty("rowCount", 2);
+        expect(test2.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+        expect(test2.display_name).not.toHaveProperty(
+          "display_name",
+          test.viewData.FeedName
+        );
+        expect(test2.display_name).toHaveProperty(
+          "display_name",
+          test2.viewData.FeedName
+        );
+        expect(test2.display_name).toHaveProperty(
+          "feed_id",
+          test.viewData.FeedID
+        );
+      });
+
+      test("keeps old display name if none given", async () => {
+        const test = await saveTestView({ FeedName: "Toto123" });
+        expect(test.response).toBe(true);
+        expect(test.result).toHaveProperty("rowCount", 1);
+        expect(test.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+        expect(test.display_name).toHaveProperty(
+          "display_name",
+          test.viewData.FeedName
+        );
+        expect(test.display_name).toHaveProperty(
+          "feed_id",
+          test.viewData.FeedID
+        );
+
+        const test2 = await saveTestView({ FeedID: test.viewData.FeedID });
+        expect(test2.response).toBe(true);
+        expect(test2.result).toHaveProperty("rowCount", 2);
+        expect(test2.insert).toHaveProperty("feed_id", test.viewData.FeedID);
+        expect(test2.display_name).toHaveProperty(
+          "display_name",
+          test.viewData.FeedName
+        );
+        expect(test2.display_name).toHaveProperty(
+          "feed_id",
+          test.viewData.FeedID
+        );
       });
 
       test("detect city and country", async () => {

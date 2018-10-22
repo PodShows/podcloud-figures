@@ -11,8 +11,8 @@
 - [x] Query to get view counts
 - [x] Query to get archives urls
 - [x] Handler to get archives CSV file
+- [x] Keep track of feed display name
 - [ ] Script to import old view counts 
-- [ ] Script to archive old views into CSV
 
 ## RSS
 - [ ] Generate auth tokens 

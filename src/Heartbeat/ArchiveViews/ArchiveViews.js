@@ -40,6 +40,19 @@ const ArchiveViews = async db => {
 
   console.debug(`Archiving feed ${feed_id}.`);
 
+  const feedNameSearch = await db.query(
+    `
+      SELECT display_name
+      FROM   PUBLIC.display_names dn
+      WHERE  dn.feed_id = $1
+      `,
+    [feed_id]
+  );
+
+  const feedName = feedNameSearch.rowCount
+    ? feedName.rows[0].display_name
+    : feed_id;
+
   const viewsSearch = await db.query(
     `
       SELECT *
@@ -68,7 +81,16 @@ const ArchiveViews = async db => {
   );
 
   const zip = new JSZip();
-  zip.file(feed_id + "-" + date.toISOString().slice(0, 10) + ".csv", data);
+  zip.file(
+    feed_name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^A-z0-9]+/g, "_") +
+      "-" +
+      date.toISOString().slice(0, 10) +
+      ".csv",
+    data
+  );
   await new Promise((resolve, reject) => {
     zip
       .generateNodeStream({
