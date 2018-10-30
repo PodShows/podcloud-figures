@@ -1,0 +1,17 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: fenglc/pgadmin4
+    links:
+      - db
+    ports:
+      - 5050:5050
+    environment:
+      DEFAULT_USER: "admin"
+      VIRTUAL_PORT: 5050
+      VIRTUAL_HOST: "pg.test"
