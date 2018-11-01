@@ -49,7 +49,7 @@ module.exports = {
       repo: "git@github.com:PodShows/podcloud-stats.git",
       path: "/home/podcloud/preprod/stats",
       "pre-deploy-local": "ssh-keyscan eve.podradio.fr >> ~/.ssh/known_hosts",
-      "post-deploy": "npm install",
+      "post-deploy": "npm install && NODE_ENV=preprod pm2 startOrReload ecosystem.config.js --env preprod",
       env: {
         NODE_ENV: "preprod"
       }
