@@ -1,7 +1,7 @@
 module.exports = {
   postgres: {
     user: "postgres",
-    host: "localhost",
+    host: "db",
     database: "podcloud_stats_test"
   }
 };

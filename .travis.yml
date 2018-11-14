@@ -9,12 +9,12 @@ addons:
 services:
   - postgresql
 env:
-  - NODE_ENV=test
+  - NODE_ENV=travis
 before_script:
   - psql -c 'create database podcloud_stats_test;' -U postgres
-  - npm run db-migrate up
+  - NODE_ENV=travis npm run db-migrate up
 script:
-  - yarn codecov
+  - NODE_ENV=travis yarn codecov
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_17c9c2b55791_key -iv $encrypted_17c9c2b55791_iv
     -in .deploy_rsa.enc -out /tmp/deploy_rsa -d

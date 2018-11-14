@@ -6,10 +6,17 @@
     "driver": "pg",
     "user": "postgres",
     "password": "postgres",
-    "host": "localhost",
+    "host": "db",
     "database": "podcloud_stats_dev"
   },
   "test": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "db",
+    "database": "podcloud_stats_test"
+  },
+  "travis": {
     "driver": "pg",
     "user": "postgres",
     "password": "postgres",

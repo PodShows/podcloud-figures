@@ -1,17 +1,42 @@
-version: '2'
+version: '3'
 services:
+  server:
+    image: node:10
+    volumes:
+      - .:/usr/app
+    working_dir: /usr/app
+    command: "npm start"
+    networks:
+      - traefik
+      - default
+    depends_on:
+      - db
+    ports:
+      - 80
+    labels:
+      - "traefik.frontend.rule=Host:stats.podcloud.test"
+
   db:
     image: postgres
     ports:
-      - 5432:5432
+      - 5432
+    labels:
+      - "traefik.enable=false"
 
   pgadmin:
     image: fenglc/pgadmin4
     links:
       - db
+    networks:
+      - traefik
+      - default
     ports:
-      - 5050:5050
-    environment:
-      DEFAULT_USER: "admin"
-      VIRTUAL_PORT: 5050
-      VIRTUAL_HOST: "pg.test"
+      - 5050
+    labels:
+      - "traefik.port=5050"
+      - "traefik.frontend.rule=Host:db.stats.podcloud.test"
+
+
+networks:
+    traefik:
+        external: true

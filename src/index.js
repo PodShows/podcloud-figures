@@ -14,7 +14,7 @@ const App = () => {
     );
 
     app.workers = 0;
-    app.max_workers = 5;
+    app.max_workers = (config.has("workers") && config.get("workers")) || 5;
     app.context = { db, maxmind };
     app.cron = new CronJob({
       cronTime: "* * * * * *",
