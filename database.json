@@ -1,0 +1,39 @@
+{
+  "defaultEnv": {
+    "ENV": "NODE_ENV"
+  },
+  "development": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "db",
+    "database": "podcloud_stats_dev"
+  },
+  "test": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "db",
+    "database": "podcloud_stats_test"
+  },
+  "travis": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "database": "podcloud_stats_test"
+  },
+  "production": {
+    "driver": "pg",
+    "host": {
+      "ENV": "DB_HOST"
+    },
+    "user": {
+      "ENV": "DB_USERNAME"
+    },
+    "password": {
+      "ENV": "DB_PASSWORD"
+    },
+    "database": "podcloud_stats"
+  }
+}

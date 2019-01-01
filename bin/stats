@@ -1,8 +1,0 @@
-#!/usr/bin/env node
-
-require("process").env.NODE_CONFIG_DIR = __dirname + "/../config"
-
-require("babel-register")
-const App = require("../src/App/index.js").default
-
-App.run()

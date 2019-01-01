@@ -1,4 +1,0 @@
-{
-  "listen": "/tmp/podcloud.stats.preprod.sock",
-  "mongodb": "mongodb://localhost/podcloud_beta"
-}

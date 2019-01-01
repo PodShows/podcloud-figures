@@ -1,8 +1,11 @@
 {
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2018,
     "sourceType": "module",
-    "env": { "es6": true, "node": true }
+    "env": { "es6": true, "node": true },
+    "ecmaFeatures": {
+      "spread": true
+    }
   },
   "extends": ["prettier"],
   "plugins": ["prettier"],

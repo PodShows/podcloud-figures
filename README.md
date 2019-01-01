@@ -1,2 +1,5 @@
 # podcloud-stats
-Stats gateway for podCloud
+
+### Generate issuers_keys
+
+`yarn new_issuer_key`
