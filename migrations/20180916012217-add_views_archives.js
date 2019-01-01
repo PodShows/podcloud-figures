@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.createTable("views_archives", {
     id: { type: "serial", primaryKey: true },
-    feed_id: { type: "uuid" },
+    feed_id: { type: "text" },
     timecode: { type: "bigint" },
     filename: { type: "text" },
     created_at: { type: "timestamp" },

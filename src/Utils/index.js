@@ -19,12 +19,7 @@ export function isEmpty(s) {
 }
 
 export function isGUID(s) {
-  return (
-    isString(s) &&
-    s.match(
-      "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    )
-  );
+  return isString(s) && s.match("^[0-9a-fA-F]{24}$");
 }
 
 export function withoutRoot(fn = (root, args, ctx, info) => {}) {
@@ -45,11 +40,9 @@ export const archiveUrl = file => {
 };
 
 export const RandomFakeFeedID = () => {
-  return (
-    "00000000-0000-0000-0000-" +
-    crypto
-      .createHash("sha256")
-      .update("" + Math.floor(+new Date() * Math.random()))
-      .digest("hex")
-  ).substring(0, 36);
+  return crypto
+    .createHash("sha256")
+    .update("" + Math.floor(+new Date() * Math.random()))
+    .digest("hex")
+    .substring(0, 24);
 };

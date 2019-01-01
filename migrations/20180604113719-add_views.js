@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.createTable("views", {
     id: { type: "serial", primaryKey: true },
     source: { type: "text" },
-    feed_id: { type: "uuid" },
+    feed_id: { type: "text" },
     ip: { type: "text" },
     user_agent: { type: "text" },
     city: { type: "json" },

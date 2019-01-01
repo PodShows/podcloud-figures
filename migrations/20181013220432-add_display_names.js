@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db
     .createTable("display_names", {
       id: { type: "serial", primaryKey: true },
-      feed_id: { type: "uuid", unique: true },
+      feed_id: { type: "text", unique: true },
       display_name: { type: "text" },
       created_at: { type: "timestamp" },
       updated_at: { type: "timestamp" }

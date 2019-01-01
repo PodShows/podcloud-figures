@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.createTable("view_counts", {
     id: { type: "serial", primaryKey: true },
     source: { type: "text" },
-    feed_id: { type: "uuid" },
+    feed_id: { type: "text" },
     sorting: { type: "text" },
     timecode: { type: "bigint" },
     bots: { type: "bigint" },
