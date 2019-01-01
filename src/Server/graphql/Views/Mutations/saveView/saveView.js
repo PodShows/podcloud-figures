@@ -113,13 +113,18 @@ const saveView = (
           `
             INSERT INTO display_names (
                 feed_id, 
-                display_name
+                display_name,
+                created_at,
+                updated_at
               ) VALUES (
                 $1, 
-                $2
+                $2,
+                current_timestamp,
+                current_timestamp
               )
             ON CONFLICT (feed_id)
-            DO UPDATE SET display_name = $2;
+            DO UPDATE 
+            SET display_name = $2, updated_at = current_timestamp;
             `,
           [FeedID, parsedFeedName],
           (err, results) => {
