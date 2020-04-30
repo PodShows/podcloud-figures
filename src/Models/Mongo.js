@@ -38,10 +38,7 @@ const Mongo = {
         if (!mongoClosingExiting && lastConnStr) {
           console.log("Reconnecting using last connection string !")
           console.log(lastConnStr)
-          Mongoose.connect(
-            lastConnStr,
-            MONGOOSE_CONNECT_OPTIONS
-          )
+          Mongoose.connect(lastConnStr, MONGOOSE_CONNECT_OPTIONS)
         }
       })
 
@@ -61,10 +58,7 @@ const Mongo = {
     lastConnStr = conn_str
 
     return new Promise((resolve, reject) => {
-      Mongoose.connect(
-        conn_str,
-        { useNewUrlParser: true }
-      ).then(() => {
+      Mongoose.connect(conn_str, { useNewUrlParser: true }).then(() => {
         resolve(Mongoose.connection, MONGOOSE_CONNECT_OPTIONS)
       }, reject)
     })

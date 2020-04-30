@@ -297,7 +297,7 @@ const Mongo = {
     lastConnStr = conn_str;
 
     return new Promise((resolve, reject) => {
-      _mongoose2.default.connect(conn_str).then(() => {
+      _mongoose2.default.connect(conn_str, { useNewUrlParser: true }).then(() => {
         resolve(_mongoose2.default.connection, MONGOOSE_CONNECT_OPTIONS);
       }, reject);
     });
@@ -694,7 +694,7 @@ PodcastViewAppeal.process = payload => {
 
     const daily_timecode = +Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0);
 
-    const monthly_timecode = +Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0, 0, 0, 0, 0);
+    const monthly_timecode = +Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0);
 
     const registered_view = new _Models.View({
       source: "feed",
