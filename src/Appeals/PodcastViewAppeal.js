@@ -94,7 +94,7 @@ PodcastViewAppeal.process = payload => {
     const monthly_timecode = +Date.UTC(
       now.getUTCFullYear(),
       now.getUTCMonth(),
-      0,
+      1,
       0,
       0,
       0,
